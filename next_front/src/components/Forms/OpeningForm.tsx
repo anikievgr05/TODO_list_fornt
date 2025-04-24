@@ -35,7 +35,7 @@ const OpeningForm = ({title, className, callback, children}: OpeningFormProps) =
     }, []);
     return (
         <div ref={wrapperRef} className={`${className} bg-white overflow-hidden sm:rounded-lg mb-8 overflow-y-auto`}>
-            <div className="p-6 bg-white">
+            <div className="p-6 bg-white w-full">
                 <div className='rounded-lg'>
                     <button
                         className="flex items-center text-dark_charcoal w-full"
