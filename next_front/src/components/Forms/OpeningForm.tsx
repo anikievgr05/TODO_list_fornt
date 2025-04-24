@@ -4,14 +4,19 @@ import React, {ReactNode, useEffect, useRef, useState} from "react";
 import {Create as V_Create} from "@/validations/ProjectValidations";
 import {Form, Formik, FormikHelpers} from "formik";
 interface OpeningFormProps {
-    title: string,
+    title: string
+    className?: string
+    callback?: () => void
     children: ReactNode
 }
-const OpeningForm = ({title, children}: OpeningFormProps) => {
+const OpeningForm = ({title, className, callback, children}: OpeningFormProps) => {
     const [active, setActive] = useState(false)
     const wrapperRef = useRef<HTMLDivElement>(null); // Ссылка на корневой элемент
 
     const toggleActive = () => {
+        if (callback && !active) {
+            callback();
+        }
         setActive((prevActive) => !prevActive);
     };
     // Функция для обработки кликов вне блока
@@ -29,9 +34,9 @@ const OpeningForm = ({title, children}: OpeningFormProps) => {
         };
     }, []);
     return (
-        <div ref={wrapperRef} className="bg-white overflow-hidden sm:rounded-lg mb-8">
+        <div ref={wrapperRef} className={`${className} bg-white overflow-hidden sm:rounded-lg mb-8 overflow-y-auto`}>
             <div className="p-6 bg-white">
-                <div>
+                <div className='rounded-lg'>
                     <button
                         className="flex items-center text-dark_charcoal w-full"
                         onClick={toggleActive}>
@@ -50,9 +55,9 @@ const OpeningForm = ({title, children}: OpeningFormProps) => {
                         <span>{title}</span>
                     </button>
                     <div
-                        className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                        className={`transition-all duration-300 ease-in-out overflow-hidden rounded-lg ${
                             active
-                                ? 'max-h-[500px] opacity-100 visible'
+                                ? 'overflow-y-scroll max-h-[700px] opacity-100 visible '
                                 : 'max-h-0'
                         }`}
                     >

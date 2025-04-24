@@ -17,10 +17,17 @@ export const project = () => {
         }
     }
 
-    const get_projects = async ({}) => {
-
+    const get_projects = async () => {
+        try {
+            await csrf(); // Предполагается, что эта функция также асинхронная
+            return await axios.get('api/project');
+        } catch (error) {
+            throw error; // Передача ошибки выше
+        }
     }
+
     return {
-        create_project
+        create_project,
+        get_projects
     }
 }

@@ -16,7 +16,7 @@ const FormСontainer = ({submitForm, validation, initialValues, className, child
             validationSchema={validation}
             initialValues={initialValues}
         >
-            <Form className="w-full p-5 bg-dark_charcoal rounded-lg mt-4">
+            <Form className="w-full p-5 bg-dark_charcoal rounded-lg mt-4 ">
                 <div className={`${className} w-96`}>
                     {children}
                 </div>

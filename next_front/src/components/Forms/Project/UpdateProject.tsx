@@ -15,19 +15,19 @@ import Textarea from "@/components/Forms/Textarea";
 import {useState} from "react";
 
 
-const CreateProject = () => {
-    const { create_project } = project()
-    const [isLoading, setIsLoading] = useState(false);
+const UpdateProject = () => {
+    const { create_project, get_projects } = project()
+    const [isLoading, setIsLoadingProjects] = useState(false);
     const [status, setStatus] = useState<'ok' | 'error' | null>(null);
 
     const submitForm = async (
         values: CreateDTO,
         { setSubmitting, setErrors, resetForm }: FormikHelpers<CreateDTO>,
     ): Promise<any> => {
-        setIsLoading(true);
+        // setIsLoading(true);
         setStatus(null);
         try {
-            await create_project(values)
+            // await create_project(values)
             setStatus('ok'); // Устанавливаем статус OK
             resetForm();
         } catch (error: Error | AxiosError | any) {
@@ -44,41 +44,57 @@ const CreateProject = () => {
                 }
             }
         } finally {
-            setIsLoading(false);
+            // setIsLoading(false);
             setSubmitting(false);
             setTimeout(() => {
                 setStatus(null);
             }, 10000);
         }
     }
+
+    const all_projects = async () => {
+        try {
+            const projects = await get_projects();
+            console.log(projects)
+        } catch (error) {
+
+        } finally {
+
+        }
+    };
+
     return (
         <OpeningForm
-            title="Создать проект"
-            className='mb-0'
+            title="Редактировать проекты"
+            className='mb-0 flex'
+            callback={all_projects}
         >
-            <FormContainer
-                submitForm={submitForm}
-                validation={Create}
-                initialValues={{name: '', description: ''}}
-                className={isLoading ? 'animate-pulse opacity-10' : ''}
-            >
-                <Input disabled={isLoading} name="name" label="Название"/>
-                <Textarea disabled={isLoading} name='description' label='Описание'></Textarea>
-                <Button
-                    type="submit"
-                    className='flex'
-                    disabled={isLoading}
+            <div className="flex">
+                <div>sdfasdf</div>
+                <FormContainer
+                    submitForm={submitForm}
+                    validation={Create}
+                    initialValues={{name: '', description: ''}}
+                    className={isLoading ? 'animate-pulse opacity-10': ''}
                 >
-                    {isLoading ? "Сохранение..." : "Сохранить"}
-                </Button>
-                {status === 'ok' && (
-                    <span className="text-fresh_lime font-medium ml-3 animate-pulse">OK</span>
-                )}
-                {status === 'error' && (
-                    <span className="text-hot_crimson font-medium  ml-3 animate-pulse">ERR</span>
-                )}
-            </FormContainer>
+                    <Input disabled={isLoading} name="name" label="Название"/>
+                    <Textarea disabled={isLoading} name='description' label='Описание'></Textarea>
+                    <Button
+                        type="submit"
+                        className='flex'
+                        disabled={isLoading}
+                    >
+                        {isLoading ? "Сохранение..." : "Сохранить"}
+                    </Button>
+                    {status === 'ok' && (
+                        <span className="text-fresh_lime font-medium ml-3 animate-pulse">OK</span>
+                    )}
+                    {status === 'error' && (
+                        <span className="text-hot_crimson font-medium  ml-3 animate-pulse">ERR</span>
+                    )}
+                </FormContainer>
+            </div>
         </OpeningForm>
     )
 }
-export default CreateProject
+export default UpdateProject
