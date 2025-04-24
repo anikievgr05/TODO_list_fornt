@@ -3,13 +3,13 @@
 import React, {ReactNode, useEffect, useRef, useState} from "react";
 import {Create as V_Create} from "@/validations/ProjectValidations";
 import {Form, Formik, FormikHelpers} from "formik";
-interface OpeningFormProps {
+interface OpeningProps {
     title: string
     className?: string
     callback?: () => void
     children: ReactNode
 }
-const OpeningForm = ({title, className, callback, children}: OpeningFormProps) => {
+const OpeningBlock = ({title, className, callback, children}: OpeningProps) => {
     const [active, setActive] = useState(false)
     const wrapperRef = useRef<HTMLDivElement>(null); // Ссылка на корневой элемент
 
@@ -22,7 +22,7 @@ const OpeningForm = ({title, className, callback, children}: OpeningFormProps) =
     // Функция для обработки кликов вне блока
     const handleClickOutside = (event: MouseEvent) => {
         if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-            setActive(false); // Скрываем блок, если клик был вне его
+            setActive(false);
         }
     };
 
@@ -30,7 +30,7 @@ const OpeningForm = ({title, className, callback, children}: OpeningFormProps) =
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
-            document.removeEventListener("mousedown", handleClickOutside); // Удаляем обработчик при размонтировании
+            document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
     return (
@@ -69,4 +69,4 @@ const OpeningForm = ({title, className, callback, children}: OpeningFormProps) =
     )
 }
 
-export default OpeningForm
+export default OpeningBlock

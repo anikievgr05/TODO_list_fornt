@@ -6,7 +6,7 @@ import {Create} from "@/validations/ProjectValidations";
 import { CreateDTO } from "@/types/Project";
 import {useAuth} from "@/hooks/auth";
 import {project} from "@/hooks/project";
-import OpeningForm from "@/components/Forms/OpeningForm";
+import OpeningBlock from "@/components/Forms/OpeningBlock";
 import Label from "@/components/Label";
 import FormContainer from "@/components/Forms/Form";
 import Input from "@/components/Forms/Input";
@@ -52,7 +52,7 @@ const CreateProject = () => {
         }
     }
     return (
-        <OpeningForm
+        <OpeningBlock
             title="Создать проект"
             className='mb-0'
         >
@@ -78,7 +78,7 @@ const CreateProject = () => {
                     <span className="text-hot_crimson font-medium  ml-3 animate-pulse">ERR</span>
                 )}
             </FormContainer>
-        </OpeningForm>
+        </OpeningBlock>
     )
 }
 export default CreateProject

@@ -6,7 +6,7 @@ import {Create} from "@/validations/ProjectValidations";
 import {CreateDTO} from "@/types/Project";
 import {useAuth} from "@/hooks/auth";
 import {project} from "@/hooks/project";
-import OpeningForm from "@/components/Forms/OpeningForm";
+import OpeningBlock from "@/components/Forms/OpeningBlock";
 import Label from "@/components/Label";
 import FormContainer from "@/components/Forms/Form";
 import Input from "@/components/Forms/Input";
@@ -14,15 +14,16 @@ import Button from "@/components/Forms/Button";
 import Textarea from "@/components/Forms/Textarea";
 import {useState} from "react";
 import {array} from "yup";
+import OpeningLeftBlock from "@/components/Forms/OpeningLeftBlock";
 
 
 const UpdateProject = () => {
-    const { create_project, get_projects } = project()
+    const { create_project, get_projects, get_project } = project()
     const [isLoadingProjects, setIsLoadingProjects] = useState(true);
-    const [isLoading, setIsLoading] = useState(false);
-    const [statusProject, setStatusProject] = useState<'ok' | 'error' | null>(null);
+    const [isLoadingContent, setIsLoadingContent] = useState(false);
+    const [statusProject, setStatusProject] = useState<true | false | 'load'>('load');
+    const [statusContent, setStatusContent] = useState<true | false | 'empty'>('empty');
     const [projects, setProjects] = useState<any[]>([]);
-
     const submitForm = async (
         values: CreateDTO,
         { setSubmitting, setErrors, resetForm }: FormikHelpers<CreateDTO>,
@@ -60,70 +61,53 @@ const UpdateProject = () => {
             setIsLoadingProjects(true)
             const data = await get_projects()
             setProjects(data.data.projects)
+            setStatusProject(true)
         } catch (error) {
-            setStatusProject('error')
-        } finally {
-            setIsLoadingProjects(false)
-
+            setStatusProject(false)
         }
     };
 
+    const create_from = async (project_data: { id: number }) => {
+        setStatusContent('empty')
+        try {
+            setIsLoadingContent(true)
+            const data = await get_project({ id: project_data.project.id }); // Получаем данные проекта
+            setStatusContent(true)
+            return (
+                <div>
+                    тут ты пилишь форму
+                </div>
+            );
+        } catch (error) {
+            setStatusContent(false)
+        } finally {
+            setIsLoadingContent(false)
+        }
+    };
+    const create_list_el = ({project}: { project: any }) => {
+        return (
+            <div className="text-left">
+                <div className="mb-2 text-silver_mist">{project.name}</div>
+                <span className="text-stormy_gray">{project.description}</span>
+            </div>
+        );
+    }
     return (
-        <OpeningForm
+        <OpeningBlock
             title="Редактировать проекты"
             className='mb-0 flex w-full'
             callback={all_projects}
         >
-            <div className="flex w-full">
-                <div className="bg-dark_charcoal max-h-96 rounded-lg mt-4 mr-5 overflow-y-scroll w-80">
-                    {projects && projects.length > 0 ? (
-                        projects.map((project, index) => (
-                            <div className="border-b-2 border-deep_onyx" key={project.id}>
-                                <button className="p-3.5 w-full text-left">
-                                    <span className="font-medium text-sm text-silver_mist ">{project.name}</span>
-                                    <div className="text-sm text-stormy_gray">{project.description}</div>
-                                </button>
-                            </div>
-                        ))
-                    ) : ( isLoadingProjects ? (
-                            Array.from({ length: 11 }, (_, index) => (
-                                <div key={index} className="animate-pulse p-3.5 border-b-2 border-b-deep_onyx">
-                                    <div className="w-64 bg-stormy_gray h-5 rounded-lg mb-2"></div>
-                                    <div className="w-64 bg-stormy_gray h-5 rounded-lg"></div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="p-3.5 border-b-2 border-b-deep_onyx">
-                                <div className="w-64 text-stormy_gray h-5 rounded-lg mb-2">Нет доступных данных</div>
-                            </div>
-                        )
-                    )}
-                </div>
-
-                <FormContainer
-                    submitForm={submitForm}
-                    validation={Create}
-                    initialValues={{name: '', description: ''}}
-                    className={isLoading ? 'animate-pulse opacity-10': ''}
-                >
-                    <Input disabled={isLoading} name="name" label="Название"/>
-                    <Textarea disabled={isLoading} name='description' label='Описание'></Textarea>
-                    <Button
-                        type="submit"
-                        className='flex'
-                        disabled={isLoading}
-                    >
-                        {isLoading ? "Сохранение..." : "Сохранить"}
-                    </Button>
-                    {status === 'ok' && (
-                        <span className="text-fresh_lime font-medium ml-3 animate-pulse">OK</span>
-                    )}
-                    {status === 'error' && (
-                        <span className="text-hot_crimson font-medium  ml-3 animate-pulse">ERR</span>
-                    )}
-                </FormContainer>
-            </div>
-        </OpeningForm>
+            <OpeningLeftBlock
+                list={projects}
+                status_list={statusProject}
+                status_content={statusContent}
+                children_list={(e) => create_list_el({project: e})}
+                placeholder="<- Выбирите проект для редактирования"
+                children_content={(e) => create_from({project: e})}
+                is_load_content={isLoadingContent}
+            />
+            </OpeningBlock>
     )
 }
 export default UpdateProject

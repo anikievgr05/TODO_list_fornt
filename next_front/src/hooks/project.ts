@@ -17,6 +17,18 @@ export const project = () => {
         }
     }
 
+    const get_project = async (data: {
+        id: number
+    }) => {
+        console.log(data)
+        try {
+            await csrf(); // Предполагается, что эта функция также асинхронная
+            return await axios.get(`api/project/${data.id}`);
+        } catch (error) {
+            throw error; // Передача ошибки выше
+        }
+    }
+
     const get_projects = async () => {
         try {
             await csrf(); // Предполагается, что эта функция также асинхронная
@@ -28,6 +40,7 @@ export const project = () => {
 
     return {
         create_project,
+        get_project,
         get_projects
     }
 }

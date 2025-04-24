@@ -1,18 +1,18 @@
 import React from 'react'
 import CreateProject from "@/components/Forms/Project/CreateProject";
-import OpeningForm from "@/components/Forms/OpeningForm";
+import OpeningBlock from "@/components/Forms/OpeningBlock";
 import UpdateProject from "@/components/Forms/Project/UpdateProject";
 
 const SettingsPage = () => {
     return (
         <div className="py-12">
             <div className="w-full sm:px-6 lg:px-8">
-                <OpeningForm
+                <OpeningBlock
                     title="Настройка проектов"
                 >
                     <CreateProject/>
                     <UpdateProject/>
-                </OpeningForm>
+                </OpeningBlock>
             </div>
         </div>
     )
