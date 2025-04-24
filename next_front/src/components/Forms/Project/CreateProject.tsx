@@ -12,17 +12,26 @@ import FormContainer from "@/components/Forms/Form";
 import Input from "@/components/Forms/Input";
 import Button from "@/components/Forms/Button";
 import Textarea from "@/components/Forms/Textarea";
+import {useState} from "react";
 
 
 const CreateProject = () => {
     const { create_project } = project()
+    const [isLoading, setIsLoading] = useState(false); // Состояние загрузки
+    const [status, setStatus] = useState<'ok' | 'error' | null>(null); // Состояние статуса
+
     const submitForm = async (
         values: CreateDTO,
-        { setSubmitting, setErrors }: FormikHelpers<CreateDTO>,
+        { setSubmitting, setErrors, resetForm }: FormikHelpers<CreateDTO>,
     ): Promise<any> => {
+        setIsLoading(true);
+        setStatus(null);
         try {
             await create_project(values)
+            setStatus('ok'); // Устанавливаем статус OK
+            resetForm();
         } catch (error: Error | AxiosError | any) {
+            setStatus('error'); // Устанавливаем статус ERR
             if (axios.isAxiosError(error)) {
                 const axiosError = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
                 if (axiosError.response?.status === 422) {
@@ -35,7 +44,11 @@ const CreateProject = () => {
                 }
             }
         } finally {
-            setSubmitting(false)
+            setIsLoading(false);
+            setSubmitting(false);
+            setTimeout(() => {
+                setStatus(null);
+            }, 10000);
         }
     }
     return (
@@ -49,14 +62,23 @@ const CreateProject = () => {
                     submitForm={submitForm}
                     validation={Create}
                     initialValues={{name: '', description: ''}}
+                    className={isLoading ? 'animate-pulse opacity-10' : ''}
                 >
-                    <Input name="name" label="Название"/>
-                    <Textarea name='description' label='Описание'></Textarea>
+                    <Input disabled={isLoading} name="name" label="Название"/>
+                    <Textarea disabled={isLoading} name='description' label='Описание'></Textarea>
                     <Button
                         type="submit"
+                        className='flex'
+                        disabled={isLoading}
                     >
-                        Сохранить
+                        {isLoading ? "Сохранение..." : "Сохранить"}
                     </Button>
+                    {status === 'ok' && (
+                        <span className="text-fresh_lime font-medium ml-3 animate-pulse">OK</span>
+                    )}
+                    {status === 'error' && (
+                        <span className="text-hot_crimson font-medium  ml-3 animate-pulse">ERR</span>
+                    )}
                 </FormContainer>
             </OpeningForm>
         </OpeningForm>

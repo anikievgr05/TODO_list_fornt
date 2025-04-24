@@ -3,7 +3,7 @@ import {useAuth} from "@/hooks/auth";
 import { AxiosResponse } from 'axios'
 
 export const project = () => {
-    const { csrf } = useAuth({})
+    const { csrf } = useAuth({ middleware: 'auth' })
 
     const create_project = async (data: {
         name: string
@@ -17,6 +17,9 @@ export const project = () => {
         }
     }
 
+    const get_projects = async ({}) => {
+
+    }
     return {
         create_project
     }

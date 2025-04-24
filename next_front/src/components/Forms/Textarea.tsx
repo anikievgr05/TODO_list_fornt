@@ -5,8 +5,9 @@ interface TextareaProps{
     name: string
     label: string
     id?: string
+    disabled?: boolean
 }
-const Textarea = ({id, name, label}: TextareaProps) => {
+const Textarea = ({id, name, label, disabled = false}: TextareaProps) => {
     return (
         <div className="pt-1 pb-1 flex items-start">
             <Label
@@ -21,6 +22,7 @@ const Textarea = ({id, name, label}: TextareaProps) => {
                     id={id || name}
                     name={name}
                     type="text"
+                    disabled={disabled}
                     className="text-silver_mist ml-2 mt-4 w-96 h-48 resize-none bg-transparent border-2 focus:ring-0 focus:border-silver_mist focus:outline-none border-silver_mist rounded-lg outline-none"
                 />
                 <ErrorMessage

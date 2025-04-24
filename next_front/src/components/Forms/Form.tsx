@@ -1,13 +1,15 @@
 import {Form, Formik, FormikHelpers} from "formik";
 import React, {ReactNode} from "react";
+import {className} from "postcss-selector-parser";
 
 interface FormProps {
     submitForm:  (values: any, helpers: FormikHelpers<any>) => Promise<void>,
     validation: object,
     initialValues: object,
+    className?: string,
     children: ReactNode
 }
-const FormСontainer = ({submitForm, validation, initialValues, children}: FormProps) => {
+const FormСontainer = ({submitForm, validation, initialValues, className, children}: FormProps) => {
     return (
         <Formik
             onSubmit={submitForm}
@@ -15,7 +17,7 @@ const FormСontainer = ({submitForm, validation, initialValues, children}: FormP
             initialValues={initialValues}
         >
             <Form className="w-full p-5 bg-dark_charcoal rounded-lg mt-4">
-                <div className="w-96">
+                <div className={`${className} w-96`}>
                     {children}
                 </div>
             </Form>
