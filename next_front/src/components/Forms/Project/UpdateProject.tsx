@@ -46,8 +46,16 @@ const UpdateProject = () => {
                 if (axiosError.response?.status === 422) {
                     const fieldErrors: Record<string, string> = {}
                     for (const [field, messages] of Object.entries(axiosError.response.data || {})) {
-                        fieldErrors[field] = messages.join(', ')
-                    }
+                        if (Array.isArray(messages)) {
+                            // Если messages — массив строк, объединяем их через ', '
+                            fieldErrors[field] = messages.join(', ');
+                        } else if (typeof messages === 'string') {
+                            // Если messages — строка, используем её как есть
+                            fieldErrors[field] = messages;
+                        } else {
+                            // Если messages имеет другой тип, пропускаем или обрабатываем по необходимости
+                            fieldErrors[field] = 'Неизвестная ошибка';
+                        }                    }
                     setErrors(fieldErrors)
                 }
             }
