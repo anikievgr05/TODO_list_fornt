@@ -2,8 +2,8 @@
 
 import {Field, FormikHelpers} from "formik";
 import axios, {AxiosError} from "axios";
-import {Update} from "@/validations/ProjectValidations";
-import {ElList, Project, UpdateDTO} from "@/types/Project";
+import {Close} from "@/validations/ProjectValidations";
+import {CloseDTO, ElList, Project, ProjectInitUpdate} from "@/types/Project";
 import {project} from "@/hooks/project";
 import OpeningBlock from "@/components/Forms/OpeningBlock";
 import Input from "@/components/Forms/Input";
@@ -13,9 +13,13 @@ import React, {useEffect, useState} from "react";
 import OpeningLeftBlock from "@/components/Forms/OpeningLeftBlock";
 import {Status} from "@/types/global";
 import FormСontainer from "@/components/Forms/FormСontainer";
+import Checkbox from "@/components/Forms/Checkbox";
+import ReadOnlyInput from "@/components/Forms/ReadOnlyInput";
+import ReadOnlyTextarea from "@/components/Forms/ReadOnlyTextarea";
+import {log} from "next/dist/server/typescript/utils";
 
-const UpdateProject = () => {
-    const {get_projects, get_project, update_project} = project()
+const CloseProject = () => {
+    const {get_projects, get_project_with_closed, close_project} = project()
     const [statusProject, setStatusProject] = useState<Status>('load')
     const [projects, setProjects] = useState<Project[]>([])
     const [statusContent, setStatusContent] = useState<Status>('empty')
@@ -23,13 +27,14 @@ const UpdateProject = () => {
     const [initialValues, setInitialValues] = useState<object>({})
     const [statusUpdate, setStatusUpdate] = useState<Status>('empty')
     const [isUpdate, setIsUpdate] = useState<null | true | false>(null)
+    const [infoProject, setInfoProject] = useState<Project | ProjectInitUpdate>({id: null, name: null, description: null})
     const submitForm = async (
-        values: UpdateDTO,
-        {setErrors}: FormikHelpers<UpdateDTO>,
+        values: CloseDTO,
+        {setErrors}: FormikHelpers<CloseDTOO>,
     ): Promise<any> => {
         setStatusUpdate('load');
         try {
-            await update_project(values)
+            await close_project(values)
             all_projects()
             setIsUpdate(true)
         } catch (error: Error | AxiosError | any) {
@@ -37,8 +42,9 @@ const UpdateProject = () => {
             if (axios.isAxiosError(error)) {
                 const axiosError = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
                 if (axiosError.response?.status === 422) {
+
                     const fieldErrors: Record<string, string> = {}
-                    for (const [field, messages] of Object.entries(axiosError.response.data || {})) {
+                    for (const [field, messages] of Object.entries(axiosError.response.data.errors || {})) {
                         if (Array.isArray(messages)) {
                             fieldErrors[field] = messages.join(', ');
                         } else if (typeof messages === 'string') {
@@ -62,8 +68,12 @@ const UpdateProject = () => {
     const load_content = async (id: number) => {
         try {
             setStatusContent('load')
-            const data = await get_project(id)
-            setInitialValues(data.data.project)
+            const data = await get_project_with_closed(id)
+            setInitialValues({
+                id: data.data.project.id,
+                is_closed: data.data.project.is_closed
+            })
+            setInfoProject(data.data.project)
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const axiosError = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
@@ -110,7 +120,7 @@ const UpdateProject = () => {
     }
     return (
         <OpeningBlock
-            title="Редактировать проекты"
+            title="Закрыть проект"
             className='mb-0 flex w-full'
             callback={() => {
                 setStatusContent('empty')
@@ -134,7 +144,7 @@ const UpdateProject = () => {
                 {statusContent === 'ok' ? (
                     <FormСontainer
                         submitForm={submitForm}
-                        validation={Update}
+                        validation={Close}
                         initialValues={initialValues}
                         classNameForm="mt-0"
                         className={`w-full ${statusUpdate === 'load' ? 'animate-pulse opacity-75' : ''}`}
@@ -146,27 +156,28 @@ const UpdateProject = () => {
                             disabled={true}
                             hidden={true}
                         />
-                        <Input name="name" label="Название" disabled={statusUpdate === 'load'}/>
-                        <Textarea name='description' label='Описание' disabled={statusUpdate === 'load'}></Textarea>
+                        <ReadOnlyInput label="Название" value={infoProject.name}/>
+                        <ReadOnlyTextarea label="Описание" value={infoProject.description}/>
+                        <Checkbox name="is_closed" id="is_closed" label="Закрыть/открыть проект (!!!все элементы, связанные с этим проектом тоже будут закрыты в случае закрытия!!!)"/>
                         <div className="flex">
                             {statusUpdate !== 'load' && (
                                 <Button
                                     type="submit"
                                 >
-                                    Сохранить
+                                    <span className='text-fresh_lime'>Обновить</span>
                                 </Button>
                             )}
                             {isUpdate === false && (
                                 <span className="text-hot_crimson font-medium mt-4 ml-3 animate-pulse">ERR</span>
                             )}
                             {isUpdate === true && (
-                                <span className="text-fresh_lime font-medium mt-4 ml-3 animate-pulse">Данные сохранены</span>
+                                <span className="text-fresh_lime font-medium mt-4 ml-3 animate-pulse">Операция завершена</span>
                             )}
                         </div>
                     </FormСontainer>
                 ) : (statusContent === 'empty' ? (
                         <div
-                            className="p-2 text-l-deep_onyx">{'<- Выберите проек, который собираетесь отредактировать'}</div>
+                            className="p-2 text-l-deep_onyx">{'<- Выберите проек, который собираетесь удалить'}</div>
                     ) : (statusContent == 'load' ? (
                             <div className="animate-pulse p-2 w-96 h-80 h-full">
                                 <div className="flex mb-2">
@@ -195,4 +206,4 @@ const UpdateProject = () => {
         </OpeningBlock>
     )
 }
-export default UpdateProject
+export default CloseProject

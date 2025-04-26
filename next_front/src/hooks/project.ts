@@ -26,6 +26,15 @@ export const project = () => {
         }
     }
 
+    const get_project_with_closed = async (id: number) => {
+        try {
+            await csrf();
+            return await axios.get(`api/project/${id}/close`);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     const update_project = async (data: {
         id: number
         name: string
@@ -48,10 +57,23 @@ export const project = () => {
         }
     }
 
+    const close_project = async (data: {
+        id: number
+        agreement: boolean | null
+    }) => {
+        try {
+            await csrf();
+            return await axios.put(`api/project/${data.id}/close`, data);
+        } catch (error) {
+            throw error;
+        }
+    }
     return {
         create_project,
         get_project,
         update_project,
-        get_projects
+        get_project_with_closed,
+        get_projects,
+        close_project
     }
 }

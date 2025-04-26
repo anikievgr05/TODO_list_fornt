@@ -34,7 +34,7 @@ const OpeningBlock = ({title, className, callback, children}: OpeningProps) => {
         };
     }, []);
     return (
-        <div ref={wrapperRef} className={`${className} bg-white overflow-hidden sm:rounded-lg mb-8 overflow-y-auto`}>
+        <div ref={wrapperRef} className={`${className} bg-white overflow-hidden sm:rounded-lg overflow-y-auto`}>
             <div className="p-6 bg-white w-full">
                 <div className='rounded-lg'>
                     <button
