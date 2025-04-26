@@ -41,7 +41,6 @@ const UpdateProject = () => {
             setIsUpdate(true)
         } catch (error: Error | AxiosError | any) {
             setIsUpdate(false)
-            console.log('err',statusUpdate)
             if (axios.isAxiosError(error)) {
                 const axiosError = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
                 if (axiosError.response?.status === 422) {
@@ -72,7 +71,6 @@ const UpdateProject = () => {
     }
 
     useEffect(() => {
-        console.log(initialValues)
         if (initialValues.id) {
             setStatusContent('ok')
         } else {
