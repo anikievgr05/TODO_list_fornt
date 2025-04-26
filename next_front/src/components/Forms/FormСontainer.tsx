@@ -7,16 +7,19 @@ interface FormProps {
     validation: object,
     initialValues: object,
     className?: string,
+    classNameForm?: string,
     children: ReactNode
+    enableReinitialize?: boolean
 }
-const FormСontainer = ({submitForm, validation, initialValues, className, children}: FormProps) => {
+const FormСontainer = ({submitForm, validation, initialValues, className, children, enableReinitialize = false, classNameForm}: FormProps) => {
     return (
         <Formik
             onSubmit={submitForm}
             validationSchema={validation}
             initialValues={initialValues}
+            enableReinitialize={enableReinitialize}
         >
-            <Form className="w-full p-5 bg-dark_charcoal rounded-lg mt-4 ">
+            <Form className={`w-full p-5 bg-dark_charcoal rounded-lg mt-4 ${classNameForm}`}>
                 <div className={`${className} w-96`}>
                     {children}
                 </div>

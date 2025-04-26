@@ -17,30 +17,41 @@ export const project = () => {
         }
     }
 
-    const get_project = async (data: {
-        id: number
-    }) => {
-        console.log(data)
+    const get_project = async (id: number) => {
         try {
-            await csrf(); // Предполагается, что эта функция также асинхронная
-            return await axios.get(`api/project/${data.id}`);
+            await csrf();
+            return await axios.get(`api/project/${id}`);
         } catch (error) {
-            throw error; // Передача ошибки выше
+            throw error;
+        }
+    }
+
+    const update_project = async (data: {
+        id: number
+        name: string
+        description: string
+    }) => {
+        try {
+            await csrf();
+            return await axios.put(`api/project/${data.id}`, data);
+        } catch (error) {
+            throw error;
         }
     }
 
     const get_projects = async () => {
         try {
-            await csrf(); // Предполагается, что эта функция также асинхронная
+            await csrf();
             return await axios.get('api/project');
         } catch (error) {
-            throw error; // Передача ошибки выше
+            throw error;
         }
     }
 
     return {
         create_project,
         get_project,
+        update_project,
         get_projects
     }
 }

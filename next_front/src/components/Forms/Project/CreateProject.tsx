@@ -8,7 +8,7 @@ import {useAuth} from "@/hooks/auth";
 import {project} from "@/hooks/project";
 import OpeningBlock from "@/components/Forms/OpeningBlock";
 import Label from "@/components/Label";
-import FormContainer from "@/components/Forms/Form";
+import FormContainer from "@/components/Forms/FormСontainer";
 import Input from "@/components/Forms/Input";
 import Button from "@/components/Forms/Button";
 import Textarea from "@/components/Forms/Textarea";
