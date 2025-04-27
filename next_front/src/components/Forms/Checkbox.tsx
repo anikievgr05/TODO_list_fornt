@@ -2,11 +2,12 @@ import Label from "@/components/Label";
 import {ErrorMessage, Field} from "formik";
 
 interface CheckboxProps{
+    id: string
     name: string
     label: string
     disabled?: boolean
 }
-const Checkbox = ({name, label, disabled = false}: CheckboxProps) => {
+const Checkbox = ({ id, name, label, disabled = false}: CheckboxProps) => {
     return (
         <div>
             <div className="pt-3 pb-1 flex items-center">
@@ -20,6 +21,7 @@ const Checkbox = ({name, label, disabled = false}: CheckboxProps) => {
                     <Field
                         type="checkbox"
                         name={name}
+                        id={id}
                         className="rounded border-gray-300 text-vivid_violet shadow-sm focus:border-vivid_violet focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     />
                 </div>

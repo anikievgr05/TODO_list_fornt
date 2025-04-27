@@ -30,7 +30,7 @@ const CloseProject = () => {
     const [infoProject, setInfoProject] = useState<Project | ProjectInitUpdate>({id: null, name: null, description: null})
     const submitForm = async (
         values: CloseDTO,
-        {setErrors}: FormikHelpers<CloseDTOO>,
+        {setErrors}: FormikHelpers<CloseDTO>,
     ): Promise<any> => {
         setStatusUpdate('load');
         try {
@@ -44,7 +44,7 @@ const CloseProject = () => {
                 if (axiosError.response?.status === 422) {
 
                     const fieldErrors: Record<string, string> = {}
-                    for (const [field, messages] of Object.entries(axiosError.response.data.errors || {})) {
+                    for (const [field, messages] of Object.entries(axiosError.response.data.errors || axiosError.response.data || {})) {
                         if (Array.isArray(messages)) {
                             fieldErrors[field] = messages.join(', ');
                         } else if (typeof messages === 'string') {
@@ -71,7 +71,8 @@ const CloseProject = () => {
             const data = await get_project_with_closed(id)
             setInitialValues({
                 id: data.data.project.id,
-                is_closed: data.data.project.is_closed
+                is_closed: data.data.project.is_closed,
+                agreement: false
             })
             setInfoProject(data.data.project)
         } catch (error) {
@@ -112,10 +113,14 @@ const CloseProject = () => {
 
     const create_list_el = (project: ElList) => {
         return (
-            <div className="text-left">
-                <div className="mb-2 text-silver_mist">{project.name}</div>
-                <span className="text-stormy_gray">{project.description}</span>
+            <div className="flex items-center justify-between">
+                <div className="text-left">
+                    <div className="mb-2 text-silver_mist">{project.name}</div>
+                    <span className="text-stormy_gray">{project.description}</span>
+                </div>
+                <div className={`${project.is_closed ? 'bg-hot_crimson' : 'bg-fresh_lime'} w-4 h-4 rounded-lg`}></div>
             </div>
+
         );
     }
     return (
@@ -158,7 +163,8 @@ const CloseProject = () => {
                         />
                         <ReadOnlyInput label="Название" value={infoProject.name}/>
                         <ReadOnlyTextarea label="Описание" value={infoProject.description}/>
-                        <Checkbox name="is_closed" id="is_closed" label="Закрыть/открыть проект (!!!все элементы, связанные с этим проектом тоже будут закрыты в случае закрытия!!!)"/>
+                        <Checkbox name="is_closed" id="is_closed" label="Закрыть/открыть проект"/>
+                        <Checkbox name="agreement" id="agreement" label="Соглашение: в случае закрытия все элементы, связанные с этим проектом тоже будут закрыты"/>
                         <div className="flex">
                             {statusUpdate !== 'load' && (
                                 <Button

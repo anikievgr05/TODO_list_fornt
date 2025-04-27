@@ -27,5 +27,6 @@ export const Close = Yup.object().shape({
     id: Yup.string()
         .required('# ID должен быть обязательно.'),
     is_closed: Yup.boolean()
-        .required('Соглашение должно быть')
+        .required('Соглашение должно быть'),
+    agreement: Yup.boolean()
 })
