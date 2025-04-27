@@ -13,6 +13,8 @@ import {useProjectContext} from "@/app/context/ProjectContext";
 
 export default function Home() {
   const { user } = useAuth({ middleware: 'guest' })
+  const { projectContext, setProjectContext } = useProjectContext();
+
   return (
     <>
       <div className="relative flex items-top justify-center min-h-screen bg-dark_charcoal dark:bg-dark_charcoal sm:items-center sm:pt-0">
@@ -31,7 +33,7 @@ export default function Home() {
             профиль
           </IconLink>
           <IconLink
-              href="/settings"
+              href="/settings_global"
               className="flex items-center mb-3"
           >
             <Settings

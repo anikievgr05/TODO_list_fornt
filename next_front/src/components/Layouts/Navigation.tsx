@@ -71,12 +71,22 @@ const Navigation = ({user}: { user: UserType }) => {
 
                         {/* Navigation Links */}
                         <div className="w-full flex justify-center">
-                            <MenuButton
-                                IconComponent={MainTasks}
-                                text="Мои задачи"
-                                href="/tasks"
-                                active={usePathname() === '/tasks'}
-                            />
+                            {isGetProject ?? (
+                                <>
+                                    <MenuButton
+                                        IconComponent={MainTasks}
+                                        text="Мои задачи"
+                                        href="/tasks"
+                                        active={usePathname() === '/tasks'}
+                                    />
+                                    <MenuButton
+                                        IconComponent={CreateTask}
+                                        text="Создать задачу"
+                                        href="/tasks/create"
+                                        active={usePathname() === '/tasks/create'}
+                                    />
+                                </>
+                            )}
                             <MenuButton
                                 IconComponent={Profile}
                                 text="Профиль"
@@ -84,16 +94,10 @@ const Navigation = ({user}: { user: UserType }) => {
                                 active={usePathname() === '/profile'}
                             />
                             <MenuButton
-                                IconComponent={CreateTask}
-                                text="Создать задачу"
-                                href="/tasks/create"
-                                active={usePathname() === '/tasks/create'}
-                            />
-                            <MenuButton
                                 IconComponent={Settings}
                                 text="Настройки"
-                                href="/settings"
-                                active={usePathname() === '/settings'}
+                                href={`${projectContext ? `/${projectContext.name}/settings` : '/settings_global'}`}
+                                active={usePathname() === `${projectContext ? `/${projectContext.name}/settings` : '/settings_global'}`}
                             />
                         </div>
                     </div>
