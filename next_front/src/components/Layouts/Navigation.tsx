@@ -71,7 +71,7 @@ const Navigation = ({user}: { user: UserType }) => {
 
                         {/* Navigation Links */}
                         <div className="w-full flex justify-center">
-                            {isGetProject ?? (
+                            {projectContext && (
                                 <>
                                     <MenuButton
                                         IconComponent={MainTasks}
