@@ -16,7 +16,6 @@ const AppLayout = ({children}: { children: ReactNode }) => {
     const params = useParams()
 
     useEffect(() => {
-        console.log(projectContext)
         if (isGetProject !== null && typeof params.project_name === "string" && user) {
             load_project(params.project_name)
         }
@@ -31,7 +30,6 @@ const AppLayout = ({children}: { children: ReactNode }) => {
     const load_project = async (name: string) => {
         try {
             const data = await get_project_by_name(name)
-            console.log(data)
             setGetProject(data.data.project)
             setProjectContext(data.data.project)
         } catch (error) {
