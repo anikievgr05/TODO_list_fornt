@@ -23,3 +23,6 @@ export interface ElList {
     name: string
     description: string
 }
+export interface ProjectAsProps {
+    project: Project
+}

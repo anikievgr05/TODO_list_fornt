@@ -1,37 +1,38 @@
 'use client'
 
-import {ErrorMessage, Field, Form, Formik, FormikHelpers} from "formik";
+import {Field, FormikHelpers} from "formik";
 import axios, {AxiosError} from "axios";
-import {Create} from "@/validations/ProjectValidations";
-import { CreateDTO } from "@/types/Project";
-import {useAuth} from "@/hooks/auth";
-import {project} from "@/hooks/project";
+import {Create} from "@/validations/TrackerValidations";
+import {ProjectAsProps} from "@/types/Project";
 import OpeningBlock from "@/components/Forms/OpeningBlock";
-import Label from "@/components/Label";
 import FormContainer from "@/components/Forms/FormСontainer";
 import Input from "@/components/Forms/Input";
 import Button from "@/components/Forms/Button";
-import Textarea from "@/components/Forms/Textarea";
-import {useState} from "react";
+import React, {useState} from "react";
+import {Status} from "@/types/global";
+import {Tracker} from "@/types/Tracker";
+import {tracker} from "@/hooks/tracker";
+import ReadOnlyInput from "@/components/Forms/ReadOnlyInput";
 
 
-const CreateTracker = () => {
-    const { create_project } = project()
+const CreateTracker: React.FC<ProjectAsProps> = ({project}) => {
+    const { create_tracker } = tracker()
     const [isLoading, setIsLoading] = useState(false);
-    const [status, setStatus] = useState<'ok' | 'error' | null>(null);
+    const [status, setStatus] = useState<Status>('empty');
 
     const submitForm = async (
-        values: CreateDTO,
-        { setSubmitting, setErrors, resetForm }: FormikHelpers<CreateDTO>,
+        values: Tracker,
+        { setSubmitting, setErrors, resetForm }: FormikHelpers<Tracker>,
     ): Promise<any> => {
         setIsLoading(true);
-        setStatus(null);
+        setStatus('load');
         try {
-            await create_project(values)
+            console.log()
+            await create_tracker(values)
             setStatus('ok'); // Устанавливаем статус OK
             resetForm();
         } catch (error: Error | AxiosError | any) {
-            setStatus('error'); // Устанавливаем статус ERR
+            setStatus('err'); // Устанавливаем статус ERR
             if (axios.isAxiosError(error)) {
                 const axiosError = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
                 if (axiosError.response?.status === 422) {
@@ -56,23 +57,30 @@ const CreateTracker = () => {
             setIsLoading(false);
             setSubmitting(false);
             setTimeout(() => {
-                setStatus(null);
+                setStatus('load');
             }, 10000);
         }
     }
     return (
         <OpeningBlock
-            title="Создать проект"
+            title="Создать трекер"
             className='mb-0'
         >
             <FormContainer
                 submitForm={submitForm}
                 validation={Create}
-                initialValues={{name: '', description: ''}}
+                initialValues={{name: '', project_id: project.id }}
                 className={isLoading ? 'animate-pulse opacity-10' : ''}
             >
+                <ReadOnlyInput label="Проект" value={project.name}/>
+                <Field
+                    id="project_id"
+                    name="project_id"
+                    type="text"
+                    disabled={true}
+                    hidden={true}
+                />
                 <Input disabled={isLoading} name="name" label="Название"/>
-                <Textarea disabled={isLoading} name='description' label='Описание'></Textarea>
                 <Button
                     type="submit"
                     className='flex'
@@ -83,7 +91,7 @@ const CreateTracker = () => {
                 {status === 'ok' && (
                     <span className="text-fresh_lime font-medium ml-3 animate-pulse">OK</span>
                 )}
-                {status === 'error' && (
+                {status === 'err' && (
                     <span className="text-hot_crimson font-medium  ml-3 animate-pulse">ERR</span>
                 )}
             </FormContainer>
