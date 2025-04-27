@@ -137,7 +137,7 @@ const Navigation = ({user}: { user: UserType }) => {
                                     <div className='w-32 px-1'>
                                         <div className='bg-dark_charcoal rounded-lg p-1'>
                                             {projects.map((project, index) => (
-                                                <Link href={`/${project.name}`} className={`inline-block w-full ${project.name === projectUse.name ? 'text-vivid_violet' : 'text-silver_mist hover:bg-transparent'}  hover:text-vivid_violet h-5 mb-2`} onClick={() => setProject(project)}>{project.name}</Link>
+                                                <Link href={`/${project.name}`} className={`inline-block w-full ${project.name === projectUse?.name ? 'text-vivid_violet' : 'text-silver_mist hover:bg-transparent'}  hover:text-vivid_violet h-5 mb-2`} onClick={() => setProject(project)}>{project.name}</Link>
                                             ))}
                                         </div>
 
