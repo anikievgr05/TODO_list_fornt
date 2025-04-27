@@ -18,7 +18,7 @@ import ReadOnlyInput from "@/components/Forms/ReadOnlyInput";
 import ReadOnlyTextarea from "@/components/Forms/ReadOnlyTextarea";
 import {log} from "next/dist/server/typescript/utils";
 
-const CloseProject = () => {
+const CloseTracker = () => {
     const {get_projects_with_closed, get_project_with_closed, close_project} = project()
     const [statusProject, setStatusProject] = useState<Status>('load')
     const [projects, setProjects] = useState<Project[]>([])
@@ -212,4 +212,4 @@ const CloseProject = () => {
         </OpeningBlock>
     )
 }
-export default CloseProject
+export default CloseTracker

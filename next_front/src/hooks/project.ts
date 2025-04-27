@@ -25,11 +25,19 @@ export const project = () => {
             throw error;
         }
     }
+    const get_project_by_name = async (name: string) => {
+        try {
+            await csrf();
+            return await axios.get(`api/project/get_by_name/${name}`);
+        } catch (error) {
+            throw error;
+        }
+    }
 
     const get_project_with_closed = async (id: number) => {
         try {
             await csrf();
-            return await axios.get(`api/project/${id}/close`);
+            return await axios.get(`api/project/closed/${id}`);
         } catch (error) {
             throw error;
         }
@@ -56,6 +64,14 @@ export const project = () => {
             throw error;
         }
     }
+    const get_projects_with_closed = async () => {
+        try {
+            await csrf();
+            return await axios.get(`api/project?with_closed=1`);
+        } catch (error) {
+            throw error;
+        }
+    }
 
     const close_project = async (data: {
         id: number
@@ -63,7 +79,7 @@ export const project = () => {
     }) => {
         try {
             await csrf();
-            return await axios.put(`api/project/${data.id}/close`, data);
+            return await axios.put(`api/project/closed/${data.id}`, data);
         } catch (error) {
             throw error;
         }
@@ -73,6 +89,8 @@ export const project = () => {
         get_project,
         update_project,
         get_project_with_closed,
+        get_projects_with_closed,
+        get_project_by_name,
         get_projects,
         close_project
     }

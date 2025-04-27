@@ -1,12 +1,6 @@
 import Link from 'next/link'
-import {useState} from 'react'
-import {usePathname} from 'next/navigation'
-
-import NavLink from '@/components/NavLink'
+import {useParams, usePathname} from 'next/navigation'
 import Dropdown from '@/components/Dropdown'
-import ResponsiveNavLink, {
-    ResponsiveNavButton,
-} from '@/components/ResponsiveNavLink'
 import {DropdownButton} from '@/components/DropdownLink'
 import ApplicationLogo from '@/components/ApplicationLogo'
 
@@ -17,13 +11,52 @@ import CreateTask from "@/components/Icons/CreateTask";
 import Settings from "@/components/Icons/Settings";
 import Profile from "@/components/Icons/Profile";
 import MainTasks from "@/components/Icons/MainTasks";
+import {project} from "@/hooks/project";
+import {useEffect, useState} from "react";
+import {Status} from "@/types/global";
+import {Project} from "@/types/Project";
+import {useProjectContext} from "@/app/context/ProjectContext";
+import NavLink from "@/components/NavLink";
 
 const Navigation = ({user}: { user: UserType }) => {
-    const pathname = usePathname()
-
+    const {get_projects} = project()
+    const [statusProject, serStatusProject] = useState<Status>('empty')
+    const [projects, setProjects] = useState<any[]>([])
+    const [projectUse, setProject] = useState<Project | null>(null)
+    const [isGetProject, setGetProject] = useState(false)
     const {logout} = useAuth({})
-    const [open, setOpen] = useState<boolean>(false)
+    const { projectContext, setProjectContext } = useProjectContext();
+    const params = useParams()
 
+    useEffect(() => {
+        if(projectContext !== null) {
+            setProject(projectContext[0])
+        }
+    }, [])
+
+    useEffect(() => {
+        console.log(123,projectContext)
+        if (projectContext !== null){
+            setProject(projectContext)
+        }
+    }, [projectContext]);
+
+    const handleOpenChange = (isOpen: boolean) => {
+        setGetProject(!isOpen)
+    };
+    const load_projects = async () => {
+        if (isGetProject) {
+            try {
+                serStatusProject('load')
+                const data = await get_projects()
+                setProjects(data.data.projects)
+                serStatusProject('ok')
+            } catch (error) {
+                serStatusProject('err')
+            } finally {
+            }
+        }
+    }
     return (
         <nav className="bg-dark_charcoal">
             {/* Primary Navigation Menu */}
@@ -65,116 +98,86 @@ const Navigation = ({user}: { user: UserType }) => {
                             />
                         </div>
                     </div>
-
-                    {/* Settings Dropdown */}
-                    <div className="hidden sm:flex sm:items-center sm:ml-6">
-                        <Dropdown
-                            align="right"
-                            width={48}
-                            trigger={
-                                <button
-                                    className="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none transition duration-150 ease-in-out">
-                                    <div>{user?.name}</div>
-
-                                    <div className="ml-1">
-                                        <svg
-                                            className="fill-current h-4 w-4"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20">
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                clipRule="evenodd"
-                                            />
-                                        </svg>
-                                    </div>
-                                </button>
-                            }>
-                            {/* Authentication */}
-                            <DropdownButton onClick={logout}>Logout</DropdownButton>
-                        </Dropdown>
-                    </div>
-
-                    {/* Hamburger */}
-                    <div className="-mr-2 flex items-center sm:hidden">
-                        <button
-                            onClick={() => setOpen(open => !open)}
-                            className="inline-flex items-center justify-center p-2 rounded-md text-silver_mist hover:text-stormy_gray focus:outline-none duration-150 ease-in-out">
-                            <svg
-                                className="h-6 w-6"
-                                stroke="currentColor"
-                                fill="none"
-                                viewBox="0 0 24 24">
-                                {open ? (
-                                    <path
-                                        className="inline-flex"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                ) : (
-                                    <path
-                                        className="inline-flex"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
+                    <div className='flex items-center'>
+                        <div className="hidden sm:flex sm:items-center sm:ml-6">
+                            <Dropdown
+                                align="right"
+                                width={48}
+                                trigger={
+                                    <button
+                                        className="flex items-center text-sm bg-white h-[35px] px-1 rounded-lg text-dark_charcoal  focus:outline-none transition duration-150 ease-in-out"
+                                        onClick={load_projects}
+                                    >
+                                        <div>Проект:</div>
+                                        <div className="pl-2">{projectUse ? projectUse.name : '#'}</div>
+                                        <div className="ml-1">
+                                            <svg
+                                                className="fill-current h-4 w-4"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 20 20">
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                    clipRule="evenodd"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </button>
+                                }
+                                onOpenChange={handleOpenChange}
+                            >
+                                {statusProject === 'empty' || statusProject === 'err' && (
+                                    <div className='w-32 text-left block px-4 py-2 text-sm leading-5 text-stormy_gray'>Проекты не найдены</div>
                                 )}
-                            </svg>
-                        </button>
+                                {statusProject === 'load' && (
+                                    <div className="w-32 px-1">
+                                        <div className='w-full h-5 bg-stormy_gray block px-4 py-2 text-sm leading-5 rounded-lg animate-pulse opacity-10'></div>
+                                    </div>
+                                )}
+                                {statusProject === 'ok' && (
+                                    <div className='w-32 px-1'>
+                                        <div className='bg-dark_charcoal rounded-lg p-1'>
+                                            {projects.map((project, index) => (
+                                                <Link href={`/${project.name}`} className={`inline-block w-full ${project.name === projectUse.name ? 'text-vivid_violet' : 'text-silver_mist hover:bg-transparent'}  hover:text-vivid_violet h-5 mb-2`} onClick={() => setProject(project)}>{project.name}</Link>
+                                            ))}
+                                        </div>
+
+                                    </div>
+                                )}
+                            </Dropdown>
+                        </div>
+                        {/* Settings Dropdown */}
+                        <div className="hidden sm:flex sm:items-center sm:ml-6">
+                            <Dropdown
+                                align="right"
+                                width={48}
+                                trigger={
+                                    <button
+                                        className="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none transition duration-150 ease-in-out">
+                                        <div>{user?.name}</div>
+
+                                        <div className="ml-1">
+                                            <svg
+                                                className="fill-current h-4 w-4"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 20 20">
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                    clipRule="evenodd"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </button>
+                                }>
+                                {/* Authentication */}
+                                <DropdownButton onClick={logout}>Logout</DropdownButton>
+                            </Dropdown>
+                        </div>
                     </div>
                 </div>
             </div>
-
             {/* Responsive Navigation Menu */}
-            {open && (
-                <div className="block sm:hidden">
-                    <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink
-                            href="/dashboard"
-                            active={pathname === '/dashboard'}>
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
-
-                    {/* Responsive Settings Options */}
-                    <div className="pt-4 pb-1 border-t border-gray-200">
-                        <div className="flex items-center px-4">
-                            <div className="flex-shrink-0">
-                                <svg
-                                    className="h-10 w-10 fill-current text-gray-400"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                    />
-                                </svg>
-                            </div>
-
-                            <div className="ml-3">
-                                <div className="font-medium text-base text-gray-800">
-                                    {user?.name}
-                                </div>
-                                <div className="font-medium text-sm text-gray-500">
-                                    {user?.email}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
-                            {/* Authentication */}
-                            <ResponsiveNavButton onClick={logout}>Logout</ResponsiveNavButton>
-                        </div>
-                    </div>
-                </div>
-            )}
         </nav>
     )
 }
