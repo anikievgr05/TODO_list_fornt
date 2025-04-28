@@ -2,7 +2,7 @@
 
 import {Field, FormikHelpers} from "formik";
 import axios, {AxiosError} from "axios";
-import {Close} from "@/validations/ProjectValidations";
+import {Close} from "@/validations/RoleValidations";
 import {ProjectAsProps} from "@/types/Project";
 import OpeningBlock from "@/components/Forms/OpeningBlock";
 import Button from "@/components/Forms/Button";
@@ -12,26 +12,26 @@ import {Status} from "@/types/global";
 import FormСontainer from "@/components/Forms/FormСontainer";
 import Checkbox from "@/components/Forms/Checkbox";
 import ReadOnlyInput from "@/components/Forms/ReadOnlyInput";
-import {tracker} from "@/hooks/tracker";
-import {CloseDTO, InitTracker, Tracker} from "@/types/Tracker";
+import {role} from "@/hooks/role";
+import {CloseDTO, InitRole, Role} from "@/types/Role";
 
-const CloseTracker: React.FC<ProjectAsProps> = ({project}) => {
-    const {get_trackers_with_closed, get_tracker_with_closed, close_tracker} = tracker(project)
-    const [statusTracker, setStatusTracker] = useState<Status>('load')
-    const [trackers, setTrackers] = useState<Tracker[]>([])
+const CloseRole: React.FC<ProjectAsProps> = ({project}) => {
+    const {get_roles_with_closed, get_role_with_closed, close_role} = role(project)
+    const [statusRole, setStatusRole] = useState<Status>('load')
+    const [roles, setRoles] = useState<Role[]>([])
     const [statusContent, setStatusContent] = useState<Status>('empty')
     const [err_get_content, setErr_get_content] = useState<string | null>(null)
     const [initialValues, setInitialValues] = useState<object>({})
     const [statusUpdate, setStatusUpdate] = useState<Status>('empty')
     const [isUpdate, setIsUpdate] = useState<null | true | false>(null)
-    const [infoTracker, setInfoTracker] = useState<Tracker | InitTracker>({id: null, name: null, project_id: project.id, is_closed: false})
+    const [infoRole, setInfoRole] = useState<Role | InitRole>({id: null, name: null, project_id: project.id, is_closed: false})
     const submitForm = async (
         values: CloseDTO,
         {setErrors}: FormikHelpers<CloseDTO>,
     ): Promise<any> => {
         setStatusUpdate('load');
         try {
-            await close_tracker(values)
+            await close_role(values)
             all_projects()
             setIsUpdate(true)
         } catch (error: Error | AxiosError | any) {
@@ -65,13 +65,13 @@ const CloseTracker: React.FC<ProjectAsProps> = ({project}) => {
     const load_content = async (id: number) => {
         try {
             setStatusContent('load')
-            const data = await get_tracker_with_closed(id)
+            const data = await get_role_with_closed(id)
             setInitialValues({
                 id: data.data[0].id,
                 is_closed: data.data[0].is_closed,
                 agreement: false
             })
-            setInfoTracker(data.data[0])
+            setInfoRole(data.data[0])
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const axiosError = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
@@ -96,36 +96,36 @@ const CloseTracker: React.FC<ProjectAsProps> = ({project}) => {
     }, [initialValues]);
     const all_projects = async () => {
         try {
-            setStatusTracker('load')
-            const data = await get_trackers_with_closed()
-            setTrackers(data.data.trackers)
+            setStatusRole('load')
+            const data = await get_roles_with_closed()
+            setRoles(data.data.roles)
         } catch (error) {
-            setStatusTracker('err')
+            setStatusRole('err')
         } finally {
-            if (statusTracker !== 'err') {
-                if (trackers.length === 0) {
-                    setStatusTracker('empty')
+            if (statusRole !== 'err') {
+                if (roles.length === 0) {
+                    setStatusRole('empty')
                 } else {
-                    setStatusTracker('ok')
+                    setStatusRole('ok')
                 }
             }
         }
     };
 
-    const create_list_el = (tracker: Tracker) => {
+    const create_list_el = (role: Role) => {
         return (
             <div className="flex items-center justify-between">
                 <div className="text-left">
-                    <div className="mb-2 text-silver_mist">{tracker.name}</div>
+                    <div className="mb-2 text-silver_mist">{role.name}</div>
                 </div>
-                <div className={`${tracker.is_closed ? 'bg-hot_crimson' : 'bg-fresh_lime'} w-4 h-4 rounded-lg`}></div>
+                <div className={`${role.is_closed ? 'bg-hot_crimson' : 'bg-fresh_lime'} w-4 h-4 rounded-lg`}></div>
             </div>
 
         );
     }
     return (
         <OpeningBlock
-            title="Закрыть трекер"
+            title="Закрыть роль"
             className='mb-0 flex w-full'
             callback={() => {
                 setStatusContent('empty')
@@ -133,11 +133,11 @@ const CloseTracker: React.FC<ProjectAsProps> = ({project}) => {
             }}
         >
             <OpeningLeftBlock
-                list={trackers}
+                list={roles}
                 get_list={() => all_projects()}
-                placeholder_list="# Создайте трекер"
-                err_list="# Не удалось загрузить трекеры"
-                status_list={statusTracker}
+                placeholder_list="# Создайте роль"
+                err_list="# Не удалось загрузить роли"
+                status_list={statusRole}
                 disabledList={statusUpdate === 'load'}
                 add_item_in_list={(e) => create_list_el(e)}
                 err_content="При получении возникла ошибка"
@@ -162,9 +162,9 @@ const CloseTracker: React.FC<ProjectAsProps> = ({project}) => {
                             disabled={true}
                             hidden={true}
                         />
-                        <ReadOnlyInput label="Название" value={infoTracker.name}/>
-                        <Checkbox name="is_closed" id="is_closed" label="Закрыть/открыть трекер"/>
-                        <Checkbox name="agreement" id="agreement" label="Соглашение: в случае закрытия все элементы, связанные с этим проектом тоже будут закрыты"/>
+                        <ReadOnlyInput label="Название" value={infoRole.name}/>
+                        <Checkbox name="is_closed" id="is_closed" label="Закрыть/открыть роль"/>
+                        <Checkbox name="agreement" id="agreement" label="Соглашение: больше нельзя будет использовать эту роль"/>
                         <div className="flex">
                             {statusUpdate !== 'load' && (
                                 <Button
@@ -183,7 +183,7 @@ const CloseTracker: React.FC<ProjectAsProps> = ({project}) => {
                     </FormСontainer>
                 ) : (statusContent === 'empty' ? (
                         <div
-                            className="p-2 text-l-deep_onyx">{'<- Выберите трекер, который собираетесь удалить'}</div>
+                            className="p-2 text-l-deep_onyx">{'<- Выберите роль, которую собираетесь удалить'}</div>
                     ) : (statusContent == 'load' ? (
                             <div className="animate-pulse p-2 w-96 h-80 h-full">
                                 <div className="flex mb-2">
@@ -212,4 +212,4 @@ const CloseTracker: React.FC<ProjectAsProps> = ({project}) => {
         </OpeningBlock>
     )
 }
-export default CloseTracker
+export default CloseRole

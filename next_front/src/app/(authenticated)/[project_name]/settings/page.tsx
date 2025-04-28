@@ -4,17 +4,17 @@ import React, {useEffect} from 'react'
 import CreateProject from "@/components/Forms/Project/CreateProject";
 import OpeningBlock from "@/components/Forms/OpeningBlock";
 import UpdateProject from "@/components/Forms/Project/UpdateProject";
-import CloseProject from "@/components/Forms/Project/CloseProject";
 import {useProjectContext} from "@/app/context/ProjectContext";
 import CreateTracker from "@/components/Forms/Tracker/CreateTracker";
 import UpdateTracker from "@/components/Forms/Tracker/UpdateTracker";
 import CloseTracker from "@/components/Forms/Tracker/CloseTracker";
+import CreateRole from "@/components/Forms/Role/CreateRole";
+import CloseProject from "@/components/Forms/Project/CloseProject";
+import UpdateRole from "@/components/Forms/Role/UpdateTracker";
+import CloseRole from "@/components/Forms/Role/CloseRole";
 
 const SettingsPage = () => {
     const { projectContext, setProjectContext } = useProjectContext();
-    useEffect(() => {
-        console.log(projectContext)
-    }, [projectContext]);
     return (
         <div className="py-12">
             <div className="w-full sm:px-6 lg:px-8">
@@ -28,15 +28,27 @@ const SettingsPage = () => {
                 </OpeningBlock>
 
                 {projectContext && (
-                    <OpeningBlock
-                        title="Настройка трекеров"
-                    >
-                        <CreateTracker
-                            project={projectContext}
-                        />
-                        <UpdateTracker project={projectContext}/>
-                        <CloseTracker project={projectContext}/>
-                    </OpeningBlock>
+                    <>
+                        <OpeningBlock
+                            title="Настройка трекеров"
+                            className={'mb-4'}
+                        >
+                            <CreateTracker
+                                project={projectContext}
+                            />
+                            <UpdateTracker project={projectContext}/>
+                            <CloseTracker project={projectContext}/>
+                        </OpeningBlock>
+                        <OpeningBlock
+                            title="Настройка ролей"
+                        >
+                            <CreateRole
+                                project={projectContext}
+                            />
+                            <UpdateRole project={projectContext}/>
+                            <CloseRole project={projectContext}/>
+                        </OpeningBlock>
+                    </>
                 )}
 
             </div>

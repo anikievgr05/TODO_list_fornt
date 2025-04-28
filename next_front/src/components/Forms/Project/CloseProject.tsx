@@ -183,7 +183,7 @@ const CloseProject = () => {
                     </FormСontainer>
                 ) : (statusContent === 'empty' ? (
                         <div
-                            className="p-2 text-l-deep_onyx">{'<- Выберите проек, который собираетесь удалить'}</div>
+                            className="p-2 text-l-deep_onyx">{'<- Выберите проект, который собираетесь удалить'}</div>
                     ) : (statusContent == 'load' ? (
                             <div className="animate-pulse p-2 w-96 h-80 h-full">
                                 <div className="flex mb-2">
