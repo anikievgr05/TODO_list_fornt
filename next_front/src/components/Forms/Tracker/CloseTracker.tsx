@@ -3,22 +3,17 @@
 import {Field, FormikHelpers} from "formik";
 import axios, {AxiosError} from "axios";
 import {Close} from "@/validations/ProjectValidations";
-import {CloseDTO, ElList, Project, ProjectAsProps, ProjectInitUpdate} from "@/types/Project";
-import {project} from "@/hooks/project";
+import {ProjectAsProps} from "@/types/Project";
 import OpeningBlock from "@/components/Forms/OpeningBlock";
-import Input from "@/components/Forms/Input";
 import Button from "@/components/Forms/Button";
-import Textarea from "@/components/Forms/Textarea";
 import React, {useEffect, useState} from "react";
 import OpeningLeftBlock from "@/components/Forms/OpeningLeftBlock";
 import {Status} from "@/types/global";
 import FormСontainer from "@/components/Forms/FormСontainer";
 import Checkbox from "@/components/Forms/Checkbox";
 import ReadOnlyInput from "@/components/Forms/ReadOnlyInput";
-import ReadOnlyTextarea from "@/components/Forms/ReadOnlyTextarea";
-import {log} from "next/dist/server/typescript/utils";
 import {tracker} from "@/hooks/tracker";
-import {InitTracker, Tracker} from "@/types/Tracker";
+import {CloseDTO, InitTracker, Tracker} from "@/types/Tracker";
 
 const CloseTracker: React.FC<ProjectAsProps> = ({project}) => {
     const {get_trackers_with_closed, get_tracker_with_closed, close_tracker} = tracker()
@@ -136,8 +131,8 @@ const CloseTracker: React.FC<ProjectAsProps> = ({project}) => {
             <OpeningLeftBlock
                 list={trackers}
                 get_list={() => all_projects()}
-                placeholder_list="# Создайте проект"
-                err_list="# Не удалось загрузить проекты"
+                placeholder_list="# Создайте трекер"
+                err_list="# Не удалось загрузить трекеры"
                 status_list={statusTracker}
                 disabledList={statusUpdate === 'load'}
                 add_item_in_list={(e) => create_list_el(e)}
