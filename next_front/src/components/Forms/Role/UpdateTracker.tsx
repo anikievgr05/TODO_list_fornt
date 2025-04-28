@@ -69,7 +69,6 @@ const UpdateRole: React.FC<ProjectAsProps> = ({project}) => {
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const axiosError = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
-                console.log(111111, axiosError.response.data)
                 if (axiosError.response?.status === 422) {
                     if (axiosError.response.data.role) {
                         setErr_get_content(axiosError.response.data.role.join(', '))
@@ -93,7 +92,6 @@ const UpdateRole: React.FC<ProjectAsProps> = ({project}) => {
         try {
             setStatusRole('load')
             const data = await get_roles()
-            console.log(data)
         } catch (error) {
             setStatusRole('err')
         } finally {

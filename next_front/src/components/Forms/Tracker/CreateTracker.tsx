@@ -27,7 +27,6 @@ const CreateTracker: React.FC<ProjectAsProps> = ({project}) => {
         setIsLoading(true);
         setStatus('load');
         try {
-            console.log()
             await create_tracker(values)
             setStatus('ok'); // Устанавливаем статус OK
             resetForm();
