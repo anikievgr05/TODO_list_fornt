@@ -16,7 +16,7 @@ import {tracker} from "@/hooks/tracker";
 import {CloseDTO, InitTracker, Tracker} from "@/types/Tracker";
 
 const CloseTracker: React.FC<ProjectAsProps> = ({project}) => {
-    const {get_trackers_with_closed, get_tracker_with_closed, close_tracker} = tracker()
+    const {get_trackers_with_closed, get_tracker_with_closed, close_tracker} = tracker(project)
     const [statusTracker, setStatusTracker] = useState<Status>('load')
     const [trackers, setTrackers] = useState<Tracker[]>([])
     const [statusContent, setStatusContent] = useState<Status>('empty')
@@ -76,7 +76,11 @@ const CloseTracker: React.FC<ProjectAsProps> = ({project}) => {
             if (axios.isAxiosError(error)) {
                 const axiosError = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
                 if (axiosError.response?.status === 422) {
-                    setErr_get_content(axiosError.response.data[0].join(', '))
+                    if (axiosError.response.data[0]) {
+                        setErr_get_content(axiosError.response.data[0].join(', '))
+                    } else if(axiosError.response.data.errors) {
+                        setErr_get_content(axiosError.response.data.errors.join(', '))
+                    }
                 }
             }
             setStatusContent('err')

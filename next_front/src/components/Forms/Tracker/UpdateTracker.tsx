@@ -17,7 +17,7 @@ import ReadOnlyInput from "@/components/Forms/ReadOnlyInput";
 import {Update} from "@/validations/TrackerValidations";
 
 const UpdateTracker: React.FC<ProjectAsProps> = ({project}) => {
-    const {get_trackers, get_tracker, update_tracker} = tracker()
+    const {get_trackers, get_tracker, update_tracker} = tracker(project)
     const [statusTracker, setStatusTracker] = useState<Status>('load')
     const [trackers, setTrackers] = useState<Tracker[]>([])
     const [statusContent, setStatusContent] = useState<Status>('empty')
@@ -65,12 +65,17 @@ const UpdateTracker: React.FC<ProjectAsProps> = ({project}) => {
         try {
             setStatusContent('load')
             const data = await get_tracker(id)
+
             setInitialValues(data.data[0])
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const axiosError = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
                 if (axiosError.response?.status === 422) {
-                    setErr_get_content(axiosError.response.data.tracker.join(', '))
+                    if (axiosError.response.data.tracker) {
+                        setErr_get_content(axiosError.response.data.tracker.join(', '))
+                    } else if(axiosError.response.data.errors) {
+                        setErr_get_content(axiosError.response.data.errors.join(', '))
+                    }
                 }
             }
             setStatusContent('err')

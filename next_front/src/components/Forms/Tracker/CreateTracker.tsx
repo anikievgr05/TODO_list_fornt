@@ -16,7 +16,7 @@ import ReadOnlyInput from "@/components/Forms/ReadOnlyInput";
 
 
 const CreateTracker: React.FC<ProjectAsProps> = ({project}) => {
-    const { create_tracker } = tracker()
+    const { create_tracker } = tracker(project)
     const [isLoading, setIsLoading] = useState(false);
     const [status, setStatus] = useState<Status>('empty');
 

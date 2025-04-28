@@ -29,6 +29,7 @@ const Navigation = ({user}: { user: UserType }) => {
     const params = useParams()
 
     useEffect(() => {
+        console.log(789)
         if(projectContext !== null) {
             setProject(projectContext[0])
         }
