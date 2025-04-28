@@ -3,7 +3,7 @@
 import {Field, FormikHelpers} from "formik";
 import axios, {AxiosError} from "axios";
 import {Close} from "@/validations/ProjectValidations";
-import {CloseDTO, ElList, Project, ProjectInitUpdate} from "@/types/Project";
+import {CloseDTO, ElList, Project, ProjectAsProps, ProjectInitUpdate} from "@/types/Project";
 import {project} from "@/hooks/project";
 import OpeningBlock from "@/components/Forms/OpeningBlock";
 import Input from "@/components/Forms/Input";
@@ -17,24 +17,26 @@ import Checkbox from "@/components/Forms/Checkbox";
 import ReadOnlyInput from "@/components/Forms/ReadOnlyInput";
 import ReadOnlyTextarea from "@/components/Forms/ReadOnlyTextarea";
 import {log} from "next/dist/server/typescript/utils";
+import {tracker} from "@/hooks/tracker";
+import {InitTracker, Tracker} from "@/types/Tracker";
 
-const CloseTracker = () => {
-    const {get_projects_with_closed, get_project_with_closed, close_project} = project()
-    const [statusProject, setStatusProject] = useState<Status>('load')
-    const [projects, setProjects] = useState<Project[]>([])
+const CloseTracker: React.FC<ProjectAsProps> = ({project}) => {
+    const {get_trackers_with_closed, get_tracker_with_closed, close_tracker} = tracker()
+    const [statusTracker, setStatusTracker] = useState<Status>('load')
+    const [trackers, setTrackers] = useState<Tracker[]>([])
     const [statusContent, setStatusContent] = useState<Status>('empty')
     const [err_get_content, setErr_get_content] = useState<string | null>(null)
     const [initialValues, setInitialValues] = useState<object>({})
     const [statusUpdate, setStatusUpdate] = useState<Status>('empty')
     const [isUpdate, setIsUpdate] = useState<null | true | false>(null)
-    const [infoProject, setInfoProject] = useState<Project | ProjectInitUpdate>({id: null, name: null, description: null})
+    const [infoTracker, setInfoTracker] = useState<Tracker | InitTracker>({id: null, name: null, project_id: project.id, is_closed: false})
     const submitForm = async (
         values: CloseDTO,
         {setErrors}: FormikHelpers<CloseDTO>,
     ): Promise<any> => {
         setStatusUpdate('load');
         try {
-            await close_project(values)
+            await close_tracker(values)
             all_projects()
             setIsUpdate(true)
         } catch (error: Error | AxiosError | any) {
@@ -68,18 +70,18 @@ const CloseTracker = () => {
     const load_content = async (id: number) => {
         try {
             setStatusContent('load')
-            const data = await get_project_with_closed(id)
+            const data = await get_tracker_with_closed(id)
             setInitialValues({
-                id: data.data.project.id,
-                is_closed: data.data.project.is_closed,
+                id: data.data[0].id,
+                is_closed: data.data[0].is_closed,
                 agreement: false
             })
-            setInfoProject(data.data.project)
+            setInfoTracker(data.data[0])
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const axiosError = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
                 if (axiosError.response?.status === 422) {
-                    setErr_get_content(axiosError.response.data.project.join(', '))
+                    setErr_get_content(axiosError.response.data[0].join(', '))
                 }
             }
             setStatusContent('err')
@@ -95,30 +97,29 @@ const CloseTracker = () => {
     }, [initialValues]);
     const all_projects = async () => {
         try {
-            setStatusProject('load')
-            const data = await get_projects_with_closed()
-            setProjects(data.data.projects)
+            setStatusTracker('load')
+            const data = await get_trackers_with_closed()
+            setTrackers(data.data.trackers)
         } catch (error) {
-            setStatusProject('err')
+            setStatusTracker('err')
         } finally {
-            if (statusProject !== 'err') {
-                if (projects.length === 0) {
-                    setStatusProject('empty')
+            if (statusTracker !== 'err') {
+                if (trackers.length === 0) {
+                    setStatusTracker('empty')
                 } else {
-                    setStatusProject('ok')
+                    setStatusTracker('ok')
                 }
             }
         }
     };
 
-    const create_list_el = (project: ElList) => {
+    const create_list_el = (tracker: Tracker) => {
         return (
             <div className="flex items-center justify-between">
                 <div className="text-left">
-                    <div className="mb-2 text-silver_mist">{project.name}</div>
-                    <span className="text-stormy_gray">{project.description}</span>
+                    <div className="mb-2 text-silver_mist">{tracker.name}</div>
                 </div>
-                <div className={`${project.is_closed ? 'bg-hot_crimson' : 'bg-fresh_lime'} w-4 h-4 rounded-lg`}></div>
+                <div className={`${tracker.is_closed ? 'bg-hot_crimson' : 'bg-fresh_lime'} w-4 h-4 rounded-lg`}></div>
             </div>
 
         );
@@ -133,11 +134,11 @@ const CloseTracker = () => {
             }}
         >
             <OpeningLeftBlock
-                list={projects}
+                list={trackers}
                 get_list={() => all_projects()}
                 placeholder_list="# Создайте проект"
                 err_list="# Не удалось загрузить проекты"
-                status_list={statusProject}
+                status_list={statusTracker}
                 disabledList={statusUpdate === 'load'}
                 add_item_in_list={(e) => create_list_el(e)}
                 err_content="При получении возникла ошибка"
@@ -154,6 +155,7 @@ const CloseTracker = () => {
                         classNameForm="mt-0"
                         className={`w-full ${statusUpdate === 'load' ? 'animate-pulse opacity-75' : ''}`}
                     >
+                        <ReadOnlyInput label="Проект" value={project.name}/>
                         <Field
                             id="id"
                             name="id"
@@ -161,8 +163,7 @@ const CloseTracker = () => {
                             disabled={true}
                             hidden={true}
                         />
-                        <ReadOnlyInput label="Название" value={infoProject.name}/>
-                        <ReadOnlyTextarea label="Описание" value={infoProject.description}/>
+                        <ReadOnlyInput label="Название" value={infoTracker.name}/>
                         <Checkbox name="is_closed" id="is_closed" label="Закрыть/открыть проект"/>
                         <Checkbox name="agreement" id="agreement" label="Соглашение: в случае закрытия все элементы, связанные с этим проектом тоже будут закрыты"/>
                         <div className="flex">

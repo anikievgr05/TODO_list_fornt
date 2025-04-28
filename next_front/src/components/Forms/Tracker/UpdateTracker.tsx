@@ -22,7 +22,7 @@ const UpdateTracker: React.FC<ProjectAsProps> = ({project}) => {
     const [trackers, setTrackers] = useState<Tracker[]>([])
     const [statusContent, setStatusContent] = useState<Status>('empty')
     const [err_get_content, setErr_get_content] = useState<string | null>(null)
-    const [initialValues, setInitialValues] = useState<Tracker | InitTracker>({id: null, name: null, project_id: project.id})
+    const [initialValues, setInitialValues] = useState<Tracker | InitTracker>({id: null, name: null, project_id: project.id, is_closed: false})
     const [statusUpdate, setStatusUpdate] = useState<Status>('empty')
     const [isUpdate, setIsUpdate] = useState<null | true | false>(null)
     const submitForm = async (
@@ -167,7 +167,7 @@ const UpdateTracker: React.FC<ProjectAsProps> = ({project}) => {
                     </FormСontainer>
                 ) : (statusContent === 'empty' ? (
                         <div
-                            className="p-2 text-l-deep_onyx">{'<- Выберите проек, который собираетесь отредактировать'}</div>
+                            className="p-2 text-l-deep_onyx">{'<- Выберите трекер, который собираетесь отредактировать'}</div>
                     ) : (statusContent == 'load' ? (
                             <div className="animate-pulse p-2 w-96 h-80 h-full">
                                 <div className="flex mb-2">

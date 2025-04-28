@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, {useEffect} from 'react'
 import CreateProject from "@/components/Forms/Project/CreateProject";
 import OpeningBlock from "@/components/Forms/OpeningBlock";
 import UpdateProject from "@/components/Forms/Project/UpdateProject";
@@ -12,7 +12,9 @@ import CloseTracker from "@/components/Forms/Tracker/CloseTracker";
 
 const SettingsPage = () => {
     const { projectContext, setProjectContext } = useProjectContext();
-
+    useEffect(() => {
+        console.log(projectContext)
+    }, [projectContext]);
     return (
         <div className="py-12">
             <div className="w-full sm:px-6 lg:px-8">
@@ -33,7 +35,7 @@ const SettingsPage = () => {
                             project={projectContext}
                         />
                         <UpdateTracker project={projectContext}/>
-                        <CloseTracker/>
+                        <CloseTracker project={projectContext}/>
                     </OpeningBlock>
                 )}
 

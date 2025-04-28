@@ -36,7 +36,7 @@ export const tracker = () => {
     const get_tracker_with_closed = async (id: number) => {
         try {
             await csrf();
-            return await axios.get(`api/tracker/closed/${id}`);
+            return await axios.get(`api/tracker/${id}?with_closed=1`);
         } catch (error) {
             throw error;
         }
