@@ -42,11 +42,7 @@ export const tracker = () => {
         }
     }
 
-    const update_tracker = async (data: {
-        id: number
-        name: string
-        description: string
-    }) => {
+    const update_tracker = async (data: Tracker) => {
         try {
             await csrf();
             return await axios.put(`api/tracker/${data.id}`, data);

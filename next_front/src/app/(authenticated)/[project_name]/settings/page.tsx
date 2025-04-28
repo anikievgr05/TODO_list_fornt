@@ -15,7 +15,7 @@ const SettingsPage = () => {
 
     return (
         <div className="py-12">
-            <div className="w-full sm:px-6lg:px-8">
+            <div className="w-full sm:px-6 lg:px-8">
                 <OpeningBlock
                     title="Настройка проектов"
                     className={'mb-4'}
@@ -32,7 +32,7 @@ const SettingsPage = () => {
                         <CreateTracker
                             project={projectContext}
                         />
-                        <UpdateTracker/>
+                        <UpdateTracker project={projectContext}/>
                         <CloseTracker/>
                     </OpeningBlock>
                 )}

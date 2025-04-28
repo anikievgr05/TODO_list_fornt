@@ -2,9 +2,6 @@
 
 import {Field, FormikHelpers} from "formik";
 import axios, {AxiosError} from "axios";
-import {Update} from "@/validations/ProjectValidations";
-import {ElList, Project, UpdateDTO} from "@/types/Project";
-import {project} from "@/hooks/project";
 import OpeningBlock from "@/components/Forms/OpeningBlock";
 import Input from "@/components/Forms/Input";
 import Button from "@/components/Forms/Button";
@@ -13,24 +10,28 @@ import React, {useEffect, useState} from "react";
 import OpeningLeftBlock from "@/components/Forms/OpeningLeftBlock";
 import {Status} from "@/types/global";
 import FormСontainer from "@/components/Forms/FormСontainer";
+import {tracker} from "@/hooks/tracker";
+import {InitTracker, Tracker, Trackers} from "@/types/Tracker";
+import {ProjectAsProps} from "@/types/Project";
+import ReadOnlyInput from "@/components/Forms/ReadOnlyInput";
+import {Update} from "@/validations/TrackerValidations";
 
-const UpdateTracker = () => {
-    const {get_projects, get_project, update_project} = project()
-    const [statusProject, setStatusProject] = useState<Status>('load')
-    const [projects, setProjects] = useState<Project[]>([])
+const UpdateTracker: React.FC<ProjectAsProps> = ({project}) => {
+    const {get_trackers, get_tracker, update_tracker} = tracker()
+    const [statusTracker, setStatusTracker] = useState<Status>('load')
+    const [trackers, setTrackers] = useState<Tracker[]>([])
     const [statusContent, setStatusContent] = useState<Status>('empty')
     const [err_get_content, setErr_get_content] = useState<string | null>(null)
-    const [initialValues, setInitialValues] = useState<object>({})
+    const [initialValues, setInitialValues] = useState<Tracker | InitTracker>({id: null, name: null, project_id: project.id})
     const [statusUpdate, setStatusUpdate] = useState<Status>('empty')
     const [isUpdate, setIsUpdate] = useState<null | true | false>(null)
     const submitForm = async (
-        values: UpdateDTO,
-        {setErrors}: FormikHelpers<UpdateDTO>,
+        values: Tracker,
+        {setErrors}: FormikHelpers<Tracker>,
     ): Promise<any> => {
         setStatusUpdate('load');
         try {
-            await update_project(values)
-            all_projects()
+            await update_tracker(values)
             setIsUpdate(true)
         } catch (error: Error | AxiosError | any) {
             setIsUpdate(false)
@@ -55,6 +56,7 @@ const UpdateTracker = () => {
             setTimeout(() => {
                 setIsUpdate(null);
             }, 5000);
+            all_trackers()
         }
     }
 
@@ -62,13 +64,13 @@ const UpdateTracker = () => {
     const load_content = async (id: number) => {
         try {
             setStatusContent('load')
-            const data = await get_project(id)
-            setInitialValues(data.data.project)
+            const data = await get_tracker(id)
+            setInitialValues(data.data[0])
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const axiosError = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
                 if (axiosError.response?.status === 422) {
-                    setErr_get_content(axiosError.response.data.project.join(', '))
+                    setErr_get_content(axiosError.response.data.tracker.join(', '))
                 }
             }
             setStatusContent('err')
@@ -82,47 +84,46 @@ const UpdateTracker = () => {
             setStatusContent('empty')
         }
     }, [initialValues]);
-    const all_projects = async () => {
+    const all_trackers = async () => {
         try {
-            setStatusProject('load')
-            const data = await get_projects()
-            setProjects(data.data.projects)
+            setStatusTracker('load')
+            const data = await get_trackers()
+            setTrackers(data.data.trackers)
         } catch (error) {
-            setStatusProject('err')
+            setStatusTracker('err')
         } finally {
-            if (statusProject !== 'err') {
-                if (projects.length === 0) {
-                    setStatusProject('empty')
+            if (statusTracker !== 'err') {
+                if (trackers.length === 0) {
+                    setStatusTracker('empty')
                 } else {
-                    setStatusProject('ok')
+                    setStatusTracker('ok')
                 }
             }
         }
     };
 
-    const create_list_el = (project: ElList) => {
+    const create_list_el = (tracker: Tracker) => {
         return (
             <div className="text-left">
-                <div className="mb-2 text-silver_mist">{project.name}</div>
-                <span className="text-stormy_gray">{project.description}</span>
+                <div className="mb-2 text-silver_mist">{tracker.name}</div>
             </div>
         );
     }
     return (
         <OpeningBlock
-            title="Редактировать проекты"
+            title="Редактировать трекеры"
             className='mb-0 flex w-full'
             callback={() => {
                 setStatusContent('empty')
-                all_projects()
+                all_trackers()
             }}
         >
             <OpeningLeftBlock
-                list={projects}
-                get_list={() => all_projects()}
-                placeholder_list="# Создайте проект"
-                err_list="# Не удалось загрузить проекты"
-                status_list={statusProject}
+                list={trackers}
+                get_list={() => all_trackers()}
+                placeholder_list="# Создайте трекер"
+                err_list="# Не удалось загрузить трекеры"
+                status_list={statusTracker}
                 disabledList={statusUpdate === 'load'}
                 add_item_in_list={(e) => create_list_el(e)}
                 err_content="При получении возникла ошибка"
@@ -139,6 +140,7 @@ const UpdateTracker = () => {
                         classNameForm="mt-0"
                         className={`w-full ${statusUpdate === 'load' ? 'animate-pulse opacity-75' : ''}`}
                     >
+                        <ReadOnlyInput label="Проект" value={project.name}/>
                         <Field
                             id="id"
                             name="id"
@@ -147,7 +149,6 @@ const UpdateTracker = () => {
                             hidden={true}
                         />
                         <Input name="name" label="Название" disabled={statusUpdate === 'load'}/>
-                        <Textarea name='description' label='Описание' disabled={statusUpdate === 'load'}></Textarea>
                         <div className="flex">
                             {statusUpdate !== 'load' && (
                                 <Button
