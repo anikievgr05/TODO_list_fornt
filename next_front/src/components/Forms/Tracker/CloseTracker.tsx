@@ -121,7 +121,7 @@ const CloseTracker: React.FC<ProjectAsProps> = ({project}) => {
     }
     return (
         <OpeningBlock
-            title="Закрыть проект"
+            title="Закрыть трекер"
             className='mb-0 flex w-full'
             callback={() => {
                 setStatusContent('empty')
