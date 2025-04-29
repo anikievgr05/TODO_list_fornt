@@ -102,14 +102,26 @@ const ChangeOrdeStatus: React.FC<ProjectAsProps> = ({project}) => {
                                             <div className="text-left h-7">
                                                 <div className="mb-2 text-silver_mist">{status.name}</div>
                                             </div>
-                                            <div className="flex items-center">
+                                            <div className="flex items-end">
                                                 <div className={`${status.is_closed ? 'bg-hot_crimson' : 'bg-fresh_lime'} w-4 h-4 rounded-lg mr-5`}></div>
-                                                <button className="w-7 h-5 hover:opacity-70" onClick={() => changeOrder(status.id, 'up')}>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill='#8993F9'  height="19"  width="27" viewBox="0 0 384 512">{/*!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--*/}<path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"/></svg>
-                                                </button>
-                                                <button className="w-7 h-5 hover:opacity-70 rotate-180 ml-3" onClick={() => changeOrder(status.id, 'down')}>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill='#8993F9'  height="19"  width="27" viewBox="0 0 384 512">{/*!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--*/}<path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"/></svg>
-                                                </button>
+                                                {index !== 0 ? (
+                                                    <button className="w-7 h-5 hover:opacity-70" onClick={() => changeOrder(status.id, 'up')}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill='#8993F9'  height="19"  width="27" viewBox="0 0 384 512">{/*!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--*/}<path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"/></svg>
+                                                    </button>
+                                                ) : (
+                                                    <button className="w-7 h-5" disabled={true}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill='#5B5A5F'  height="19"  width="27" viewBox="0 0 384 512">{/*!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--*/}<path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"/></svg>
+                                                    </button>
+                                                )}
+                                                {index !== statuses.length - 1 ? (
+                                                    <button className="w-7 h-5 hover:opacity-70 rotate-180 ml-3" onClick={() => changeOrder(status.id, 'down')}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill='#8993F9'  height="19"  width="27" viewBox="0 0 384 512">{/*!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--*/}<path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"/></svg>
+                                                    </button>
+                                                ) : (
+                                                    <button className="w-7 h-5  rotate-180 ml-3" disabled={true}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill='#5B5A5F'  height="19"  width="27" viewBox="0 0 384 512">{/*!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--*/}<path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"/></svg>
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
