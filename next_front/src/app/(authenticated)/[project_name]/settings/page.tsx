@@ -12,6 +12,10 @@ import CreateRole from "@/components/Forms/Role/CreateRole";
 import CloseProject from "@/components/Forms/Project/CloseProject";
 import UpdateRole from "@/components/Forms/Role/UpdateTracker";
 import CloseRole from "@/components/Forms/Role/CloseRole";
+import CreateStatus from "@/components/Forms/Status/CreateStatus";
+import UpdateStatus from "@/components/Forms/Status/UpdateStatus";
+import CloseStatus from "@/components/Forms/Status/CloseStatus";
+import ChangeOrdeStatus from "@/components/Forms/Status/ChangeOrdeStatus";
 
 const SettingsPage = () => {
     const { projectContext, setProjectContext } = useProjectContext();
@@ -41,12 +45,24 @@ const SettingsPage = () => {
                         </OpeningBlock>
                         <OpeningBlock
                             title="Настройка ролей"
+                            className={'mb-4'}
                         >
                             <CreateRole
                                 project={projectContext}
                             />
                             <UpdateRole project={projectContext}/>
                             <CloseRole project={projectContext}/>
+                        </OpeningBlock>
+                        <OpeningBlock
+                            title="Настройка статусов"
+                            className={'mb-4'}
+                        >
+                            <CreateStatus
+                                project={projectContext}
+                            />
+                            <UpdateStatus project={projectContext}/>
+                            <CloseStatus project={projectContext}/>
+                            <ChangeOrdeStatus project={projectContext}/>
                         </OpeningBlock>
                     </>
                 )}
