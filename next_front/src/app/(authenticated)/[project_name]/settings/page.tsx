@@ -10,12 +10,13 @@ import UpdateTracker from "@/components/Forms/Tracker/UpdateTracker";
 import CloseTracker from "@/components/Forms/Tracker/CloseTracker";
 import CreateRole from "@/components/Forms/Role/CreateRole";
 import CloseProject from "@/components/Forms/Project/CloseProject";
-import UpdateRole from "@/components/Forms/Role/UpdateTracker";
+import UpdateRole from "@/components/Forms/Role/UpdateRole";
 import CloseRole from "@/components/Forms/Role/CloseRole";
 import CreateStatus from "@/components/Forms/Status/CreateStatus";
 import UpdateStatus from "@/components/Forms/Status/UpdateStatus";
 import CloseStatus from "@/components/Forms/Status/CloseStatus";
 import ChangeOrdeStatus from "@/components/Forms/Status/ChangeOrdeStatus";
+import CreateUser from "@/components/Forms/User/CreateUser";
 
 const SettingsPage = () => {
     const { projectContext, setProjectContext } = useProjectContext();
@@ -31,6 +32,14 @@ const SettingsPage = () => {
                     <CloseProject/>
                 </OpeningBlock>
 
+                <OpeningBlock
+                    title="Настройка пользователей"
+                    className={'mb-4'}
+                >
+                    <CreateUser/>
+                    <UpdateProject/>
+                    <CloseProject/>
+                </OpeningBlock>
                 {projectContext && (
                     <>
                         <OpeningBlock
