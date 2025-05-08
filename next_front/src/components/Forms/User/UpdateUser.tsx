@@ -33,7 +33,7 @@ const UpdateProject = () => {
         setStatusUpdate('load');
         try {
             await update_user_global(values)
-            all_projects()
+            all_users()
             setIsUpdate(true)
         } catch (error: Error | AxiosError | any) {
             setIsUpdate(false)
@@ -85,7 +85,7 @@ const UpdateProject = () => {
             setStatusContent('empty')
         }
     }, [initialValues]);
-    const all_projects = async () => {
+    const all_users = async () => {
         try {
             setStatusUser('load')
             const data = await get_users()
@@ -117,12 +117,12 @@ const UpdateProject = () => {
             className='mb-0 flex w-full'
             callback={() => {
                 setStatusContent('empty')
-                all_projects()
+                all_users()
             }}
         >
             <OpeningLeftBlock
                 list={users}
-                get_list={() => all_projects()}
+                get_list={() => all_users()}
                 placeholder_list="#"
                 err_list="# Не удалось загрузить пользователей"
                 status_list={statusUser}
@@ -135,40 +135,42 @@ const UpdateProject = () => {
                 }}
             >
                 {statusContent === 'ok' ? (
-                    <FormСontainer
-                        submitForm={submitForm}
-                        validation={Update}
-                        initialValues={initialValues}
-                        classNameForm="mt-0"
-                        className={`w-full ${statusUpdate === 'load' ? 'animate-pulse opacity-75' : ''}`}
-                    >
-                        <Field
-                            id="id"
-                            name="id"
-                            type="text"
-                            disabled={true}
-                            hidden={true}
-                        />
-                        <Input name="name" label="Название" disabled={statusUpdate === 'load'}/>
-                        <Input name="email" label="Почта"/>
-                        <InputPassword name="password" label="Парль"/>
-                        <InputPassword name="password_confirmation" label="Повторите пароль"/>
-                        <div className="flex">
-                            {statusUpdate !== 'load' && (
-                                <Button
-                                    type="submit"
-                                >
-                                    Сохранить
-                                </Button>
-                            )}
-                            {isUpdate === false && (
-                                <span className="text-hot_crimson font-medium mt-4 ml-3 animate-pulse">ERR</span>
-                            )}
-                            {isUpdate === true && (
-                                <span className="text-fresh_lime font-medium mt-4 ml-3 animate-pulse">Данные сохранены</span>
-                            )}
-                        </div>
-                    </FormСontainer>
+                    <div className="flex">
+                        <FormСontainer
+                            submitForm={submitForm}
+                            validation={Update}
+                            initialValues={initialValues}
+                            classNameForm="mt-0"
+                            className={`w-full ${statusUpdate === 'load' ? 'animate-pulse opacity-75' : ''}`}
+                        >
+                            <Field
+                                id="id"
+                                name="id"
+                                type="text"
+                                disabled={true}
+                                hidden={true}
+                            />
+                            <Input name="name" label="Название" disabled={statusUpdate === 'load'}/>
+                            <Input name="email" label="Почта"/>
+                            <InputPassword name="password" label="Парль"/>
+                            <InputPassword name="password_confirmation" label="Повторите пароль"/>
+                            <div className="flex">
+                                {statusUpdate !== 'load' && (
+                                    <Button
+                                        type="submit"
+                                    >
+                                        Сохранить
+                                    </Button>
+                                )}
+                                {isUpdate === false && (
+                                    <span className="text-hot_crimson font-medium mt-4 ml-3 animate-pulse">ERR</span>
+                                )}
+                                {isUpdate === true && (
+                                    <span className="text-fresh_lime font-medium mt-4 ml-3 animate-pulse">Данные сохранены</span>
+                                )}
+                            </div>
+                        </FormСontainer>
+                    </div>
                 ) : (statusContent === 'empty' ? (
                         <div
                             className="p-2 text-l-deep_onyx">{'<- Выберите пользоватлей, которого собираетесь отредактировать'}</div>
