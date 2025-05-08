@@ -16,7 +16,7 @@ import FormСontainer from "@/components/Forms/FormСontainer";
 import {user_project} from "@/hooks/user_project";
 import {UpdateUserProject, User, Users} from "@/types/User_Project";
 import InputPassword from "@/components/Forms/InputPassword";
-
+import Checkbox from "@/components/Forms/Checkbox";
 const UpdateProject = () => {
     const {get_users, get_user, update_user_global} = user_project()
     const [statusUser, setStatusUser] = useState<Status>('load')
@@ -26,6 +26,7 @@ const UpdateProject = () => {
     const [initialValues, setInitialValues] = useState<object>({})
     const [statusUpdate, setStatusUpdate] = useState<Status>('empty')
     const [isUpdate, setIsUpdate] = useState<null | true | false>(null)
+    const [projects, setProjects] = useState<object>({})
     const submitForm = async (
         values: UpdateUserProject,
         {setErrors}: FormikHelpers<UpdateUserProject>,
@@ -64,9 +65,10 @@ const UpdateProject = () => {
 
     const load_content = async (id: number) => {
         try {
+            setProjects({})
             setStatusContent('load')
             const data = await get_user(id)
-            setInitialValues(data.data)
+            setInitialValues(formatInitialValues(data.data));
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const axiosError = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
@@ -77,6 +79,23 @@ const UpdateProject = () => {
             setStatusContent('err')
         }
     }
+
+    const formatInitialValues = (userData : any) => {
+        const projectsUser = userData.projects.reduce((acc, project) => {
+            acc[project.id] = {name: project.name}
+            return acc;
+        }, {})
+        setProjects(projectsUser)
+        return {
+            id: userData.id,
+            name: userData.name,
+            email: userData.email,
+            projects: userData.projects.reduce((acc, project) => {
+                acc[project.id] = project.pivot?.is_fired ?? false;
+                return acc;
+            }, {}),
+        };
+    };
 
     useEffect(() => {
         if (initialValues.id) {
@@ -143,31 +162,42 @@ const UpdateProject = () => {
                             classNameForm="mt-0"
                             className={`w-full ${statusUpdate === 'load' ? 'animate-pulse opacity-75' : ''}`}
                         >
-                            <Field
-                                id="id"
-                                name="id"
-                                type="text"
-                                disabled={true}
-                                hidden={true}
-                            />
-                            <Input name="name" label="Название" disabled={statusUpdate === 'load'}/>
-                            <Input name="email" label="Почта"/>
-                            <InputPassword name="password" label="Парль"/>
-                            <InputPassword name="password_confirmation" label="Повторите пароль"/>
-                            <div className="flex">
-                                {statusUpdate !== 'load' && (
-                                    <Button
-                                        type="submit"
-                                    >
-                                        Сохранить
-                                    </Button>
-                                )}
-                                {isUpdate === false && (
-                                    <span className="text-hot_crimson font-medium mt-4 ml-3 animate-pulse">ERR</span>
-                                )}
-                                {isUpdate === true && (
-                                    <span className="text-fresh_lime font-medium mt-4 ml-3 animate-pulse">Данные сохранены</span>
-                                )}
+                            <div className='flex'>
+                                <div>
+                                    <Field
+                                        id="id"
+                                        name="id"
+                                        type="text"
+                                        disabled={true}
+                                        hidden={true}
+                                    />
+                                    <Input name="name" label="Название" disabled={statusUpdate === 'load'}/>
+                                    <Input name="email" label="Почта"/>
+                                    <InputPassword name="password" label="Парль"/>
+                                    <InputPassword name="password_confirmation" label="Повторите пароль"/>
+                                    <div className="flex">
+                                        {statusUpdate !== 'load' && (
+                                            <Button
+                                                type="submit"
+                                            >
+                                                Сохранить
+                                            </Button>
+                                        )}
+                                        {isUpdate === false && (
+                                            <span className="text-hot_crimson font-medium mt-4 ml-3 animate-pulse">ERR</span>
+                                        )}
+                                        {isUpdate === true && (
+                                            <span className="text-fresh_lime font-medium mt-4 ml-3 animate-pulse">Данные сохранены</span>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="w-full max-h-64 overflow-y-scroll">
+                                    {Object.keys(initialValues.projects).map((projectId) => (
+                                        <div key={projectId}>
+                                            <Checkbox label={`Скрыть для ${initialValues.name} проект "${projects[projectId].name}" да/нет`} name={`projects.${projectId}`} id={`projects.${projectId}`}/>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </FormСontainer>
                     </div>

@@ -4,7 +4,9 @@ export interface CreateUserProject {
     password: string
     password_confirmation: boolean
 }
-export interface UpdateUserProject extends CreateUserProject {}
+export interface UpdateUserProject extends CreateUserProject {
+    projects: object
+}
 export interface InitUser {
     id: null,
     name: null,
