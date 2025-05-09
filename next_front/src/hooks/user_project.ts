@@ -28,16 +28,35 @@ export const user_project = () => {
         }
     }
 
-    const get_roles_with_closed = async () => {
+    const get_roles_with_closed = async (project_id: number) => {
         try {
             await csrf();
-            return await axios.get(`api/user_project?with_closed=1`);
+            return await axios.get(`api/user_project?project_id=${project_id}`);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const update_role = async (data: object) => {
+        try {
+            await csrf();
+            console.log(data)
+            return await axios.put(`api/user_project/update_role/${data.id}/?role=${data.role}&project_id=${data.project_id}`);
         } catch (error) {
             throw error;
         }
     }
 
     const get_user = async (id: number) => {
+        try {
+            await csrf();
+            return await axios.get(`api/user_project/${id}`);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const get_user_by_project = async (id: number, project_id: number) => {
         try {
             await csrf();
             return await axios.get(`api/user_project/${id}`);
@@ -92,6 +111,8 @@ export const user_project = () => {
         get_roles_with_closed,
         update_user_global,
         firer_all_user,
-        close_role
+        close_role,
+        get_user_by_project,
+        update_role,
     }
 }

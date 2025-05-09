@@ -7,6 +7,10 @@ export interface CreateUserProject {
 export interface UpdateUserProject extends CreateUserProject {
     projects: object
 }
+export interface UpdateRoleUser {
+    id: number
+    role: number
+}
 export interface InitUser {
     id: null,
     name: null,

@@ -9,7 +9,7 @@ interface InputProps{
 }
 const Input = ({id, name, label, disabled = false}: InputProps) => {
     return (
-        <div className="pt-1 pb-1 flex items-start">
+        <div className="pt-1 pb-1 flex items-start justify-between">
             <Label
                 className="pt-3 text-silver_mist flex items-center"
                 htmlFor={name}

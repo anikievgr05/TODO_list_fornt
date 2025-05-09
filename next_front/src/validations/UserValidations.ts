@@ -29,7 +29,11 @@ export const Update = Yup.object().shape({
         .min(8, 'Пароль должен быть не менее 8 символов')
         .oneOf([Yup.ref('password_confirmation')], 'Пароли должны совпадать'),
 })
-
+export const UpdateRole = Yup.object().shape({
+    role: Yup.string()
+        .required('Выберите роль')
+        .matches(/^roleId_\d+$/, 'Выберите корректную роль')
+});
 export const Close = Yup.object().shape({
     id: Yup.string()
         .required('# ID должен быть обязательно.'),

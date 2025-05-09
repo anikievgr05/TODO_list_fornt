@@ -17,6 +17,8 @@ import UpdateStatus from "@/components/Forms/Status/UpdateStatus";
 import CloseStatus from "@/components/Forms/Status/CloseStatus";
 import ChangeOrdeStatus from "@/components/Forms/Status/ChangeOrdeStatus";
 import CreateUser from "@/components/Forms/User/CreateUser";
+import UpdateUser from "@/components/Forms/User/UpdateUser";
+import UpdateRoleUser from "@/components/Forms/User/UpdateRoleUser";
 
 const SettingsPage = () => {
     const { projectContext, setProjectContext } = useProjectContext();
@@ -37,8 +39,12 @@ const SettingsPage = () => {
                     className={'mb-4'}
                 >
                     <CreateUser/>
-                    <UpdateProject/>
-                    <CloseProject/>
+                    <UpdateUser/>
+                    {projectContext && (
+                        <>
+                            <UpdateRoleUser project={projectContext}/>
+                        </>
+                    )}
                 </OpeningBlock>
                 {projectContext && (
                     <>

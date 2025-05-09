@@ -2,8 +2,8 @@
 
 import {Field, FormikHelpers} from "formik";
 import axios, {AxiosError} from "axios";
-import {Update} from "@/validations/UserValidations";
-import {ElList, Project, UpdateDTO} from "@/types/Project";
+import {Update, UpdateRole} from "@/validations/UserValidations";
+import {ElList, Project, ProjectAsProps, UpdateDTO} from "@/types/Project";
 import {project} from "@/hooks/project";
 import OpeningBlock from "@/components/Forms/OpeningBlock";
 import Input from "@/components/Forms/Input";
@@ -14,11 +14,14 @@ import OpeningLeftBlock from "@/components/Forms/OpeningLeftBlock";
 import {Status} from "@/types/global";
 import FormСontainer from "@/components/Forms/FormСontainer";
 import {user_project} from "@/hooks/user_project";
-import {UpdateUserProject, User, Users} from "@/types/User_Project";
+import {UpdateRoleUser, UpdateUserProject, User, Users} from "@/types/User_Project";
 import InputPassword from "@/components/Forms/InputPassword";
 import Checkbox from "@/components/Forms/Checkbox";
-const UpdateUser = () => {
-    const {get_users, get_user, update_user_global} = user_project()
+import Radio from "@/components/Forms/Radio";
+import {role} from "@/hooks/role";
+const UpdateRoleUser: React.FC<ProjectAsProps> = ({project}) => {
+    const {get_roles_with_closed, get_user_by_project, update_role} = user_project()
+    const {get_roles} = role(project)
     const [statusUser, setStatusUser] = useState<Status>('load')
     const [users, setUsers] = useState<Users[]>([])
     const [statusContent, setStatusContent] = useState<Status>('empty')
@@ -26,14 +29,20 @@ const UpdateUser = () => {
     const [initialValues, setInitialValues] = useState<object>({})
     const [statusUpdate, setStatusUpdate] = useState<Status>('empty')
     const [isUpdate, setIsUpdate] = useState<null | true | false>(null)
-    const [projects, setProjects] = useState<object>({})
+    const [roles, setRole] = useState<object>({})
+    const [status_loadRoles, setStatus_loadRoles] = useState<Status>('empty')
     const submitForm = async (
-        values: UpdateUserProject,
-        {setErrors}: FormikHelpers<UpdateUserProject>,
+        values: UpdateRoleUser,
+        {setErrors}: FormikHelpers<UpdateRoleUser>,
     ): Promise<any> => {
         setStatusUpdate('load');
         try {
-            await update_user_global(values)
+            const roleId = parseInt(values.role.replace('roleId_', ''), 10);
+            await update_role({
+                id: values.id,
+                role: roleId,
+                project_id: project.id
+            })
             all_users()
             setIsUpdate(true)
         } catch (error: Error | AxiosError | any) {
@@ -62,13 +71,36 @@ const UpdateUser = () => {
         }
     }
 
-
+    const load_roles = async () => {
+        try {
+            setRole({})
+            setStatus_loadRoles('load')
+            const user_roles = await get_roles()
+            setRole(user_roles.data.roles)
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const axiosError = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
+                if (axiosError.response?.status === 422) {
+                    setErr_get_content(axiosError.response.data.join(', '))
+                }
+            }
+            setStatus_loadRoles('err')
+        }
+    }
+    useEffect(() => {
+        console.log(roles)
+        if (roles) {
+            setStatus_loadRoles('ok')
+        } else {
+            setStatus_loadRoles('empty')
+        }
+    }, [roles]);
     const load_content = async (id: number) => {
         try {
-            setProjects({})
+            setRole({})
             setStatusContent('load')
-            const data = await get_user(id)
-            setInitialValues(formatInitialValues(data.data));
+            const data = await get_user_by_project(id, project.id)
+            setInitialValues(formatInitialValues(data.data))
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const axiosError = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
@@ -81,19 +113,9 @@ const UpdateUser = () => {
     }
 
     const formatInitialValues = (userData : any) => {
-        const projectsUser = userData.projects.reduce((acc, project) => {
-            acc[project.id] = {name: project.name}
-            return acc;
-        }, {})
-        setProjects(projectsUser)
         return {
             id: userData.id,
-            name: userData.name,
-            email: userData.email,
-            projects: userData.projects.reduce((acc, project) => {
-                acc[project.id] = project.pivot?.is_fired ?? false;
-                return acc;
-            }, {}),
+            role: (userData.roles[0] ? 'roleId_' + userData.roles[0].id : ''),
         };
     };
 
@@ -107,7 +129,7 @@ const UpdateUser = () => {
     const all_users = async () => {
         try {
             setStatusUser('load')
-            const data = await get_users()
+            const data = await get_roles_with_closed(project.id)
             setUsers(data.data.users)
         } catch (error) {
             setStatusUser('err')
@@ -132,7 +154,7 @@ const UpdateUser = () => {
     }
     return (
         <OpeningBlock
-            title="Редактировать пользователей"
+            title={`Обновить роль пользователю на проекте "${project.name}"`}
             className='mb-0 flex w-full'
             callback={() => {
                 setStatusContent('empty')
@@ -151,13 +173,14 @@ const UpdateUser = () => {
                 callback_click={(e) => {
                     setStatusContent('empty')
                     load_content(e.id)
+                    load_roles()
                 }}
             >
-                {statusContent === 'ok' ? (
+                {statusContent === 'ok' && status_loadRoles === 'ok' ? (
                     <div className="flex">
                         <FormСontainer
                             submitForm={submitForm}
-                            validation={Update}
+                            validation={UpdateRole}
                             initialValues={initialValues}
                             classNameForm="mt-0"
                             className={`w-full ${statusUpdate === 'load' ? 'animate-pulse opacity-75' : ''}`}
@@ -171,10 +194,11 @@ const UpdateUser = () => {
                                         disabled={true}
                                         hidden={true}
                                     />
-                                    <Input name="name" label="Название" disabled={statusUpdate === 'load'}/>
-                                    <Input name="email" label="Почта"/>
-                                    <InputPassword name="password" label="Парль"/>
-                                    <InputPassword name="password_confirmation" label="Повторите пароль"/>
+                                    {Object.keys(roles).map((role) => (
+                                        <div key={role}>
+                                            <Radio name="role" label={roles[role].name} value={`roleId_${roles[role].id}`}/>
+                                        </div>
+                                    ))}
                                     <div className="flex">
                                         {statusUpdate !== 'load' && (
                                             <Button
@@ -190,13 +214,6 @@ const UpdateUser = () => {
                                             <span className="text-fresh_lime font-medium mt-4 ml-3 animate-pulse">Данные сохранены</span>
                                         )}
                                     </div>
-                                </div>
-                                <div className="w-full max-h-64 overflow-y-scroll">
-                                    {Object.keys(initialValues.projects).map((projectId) => (
-                                        <div key={projectId}>
-                                            <Checkbox label={`Скрыть для ${initialValues.name} проект "${projects[projectId].name}" да/нет`} name={`projects.${projectId}`} id={`projects.${projectId}`}/>
-                                        </div>
-                                    ))}
                                 </div>
                             </div>
                         </FormСontainer>
@@ -232,4 +249,4 @@ const UpdateUser = () => {
         </OpeningBlock>
     )
 }
-export default UpdateUser
+export default UpdateRoleUser
