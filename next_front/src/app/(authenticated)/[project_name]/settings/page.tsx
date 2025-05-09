@@ -19,6 +19,10 @@ import ChangeOrdeStatus from "@/components/Forms/Status/ChangeOrdeStatus";
 import CreateUser from "@/components/Forms/User/CreateUser";
 import UpdateUser from "@/components/Forms/User/UpdateUser";
 import UpdateRoleUser from "@/components/Forms/User/UpdateRoleUser";
+import CreatePriority from "@/components/Forms/Priority/CreatePriority";
+import UpdatePriority from "@/components/Forms/Priority/UpdatePriority";
+import ChangeOrdePriority from "@/components/Forms/Priority/ChangeOrdePriority";
+import ClosePriority from "@/components/Forms/Priority/ClosePriority";
 
 const SettingsPage = () => {
     const { projectContext, setProjectContext } = useProjectContext();
@@ -78,6 +82,17 @@ const SettingsPage = () => {
                             <UpdateStatus project={projectContext}/>
                             <CloseStatus project={projectContext}/>
                             <ChangeOrdeStatus project={projectContext}/>
+                        </OpeningBlock>
+                        <OpeningBlock
+                            title="Настройка приоритетов"
+                            className={'mb-4'}
+                        >
+                            <CreatePriority
+                                project={projectContext}
+                            />
+                            <UpdatePriority project={projectContext}/>
+                            <ClosePriority project={projectContext}/>
+                            <ChangeOrdePriority project={projectContext}/>
                         </OpeningBlock>
                     </>
                 )}
