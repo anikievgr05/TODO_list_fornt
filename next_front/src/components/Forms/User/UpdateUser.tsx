@@ -191,7 +191,7 @@ const UpdateUser = () => {
                                         )}
                                     </div>
                                 </div>
-                                <div className="w-full max-h-64 overflow-y-scroll">
+                                <div className="w-full max-h-64 overflow-y-scroll pr-2">
                                     {Object.keys(initialValues.projects).map((projectId) => (
                                         <div key={projectId}>
                                             <Checkbox label={`Скрыть для ${initialValues.name} проект "${projects[projectId].name}" да/нет`} name={`projects.${projectId}`} id={`projects.${projectId}`}/>

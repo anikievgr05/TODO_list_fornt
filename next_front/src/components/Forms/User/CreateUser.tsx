@@ -72,7 +72,7 @@ const CreateUser = () => {
                 submitForm={submitForm}
                 validation={Create}
                 initialValues={{name: '', email: '', password: '', password_confirmation: ''}}
-                className={isLoading ? 'animate-pulse opacity-10' : ''}
+                className={`${isLoading ? 'animate-pulse opacity-10' : ''} w-1/4`}
             >
                 <Input disabled={isLoading} name="name" label="Имя"/>
                 <Input disabled={isLoading} name="email" label="Почта"/>

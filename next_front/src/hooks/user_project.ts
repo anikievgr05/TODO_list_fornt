@@ -28,6 +28,15 @@ export const user_project = () => {
         }
     }
 
+    const get_users_in_project = async (project_id: number) => {
+        try {
+            await csrf();
+            return await axios.get(`api/user_project?project_id=${project_id}`);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     const get_roles_with_closed = async (project_id: number) => {
         try {
             await csrf();
@@ -114,5 +123,6 @@ export const user_project = () => {
         close_role,
         get_user_by_project,
         update_role,
+        get_users_in_project
     }
 }

@@ -29,7 +29,7 @@ const Dropdown = ({
             break;
         case 'right':
         default:
-            alignmentClasses = 'origin-top-right right-0';
+            alignmentClasses = 'z-50 origin-top-right right-0';
             break;
     }
 

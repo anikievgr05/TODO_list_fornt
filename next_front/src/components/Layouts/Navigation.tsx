@@ -82,8 +82,8 @@ const Navigation = ({user}: { user: UserType }) => {
                                     <MenuButton
                                         IconComponent={CreateTask}
                                         text="Создать задачу"
-                                        href="/tasks/create"
-                                        active={usePathname() === '/tasks/create'}
+                                        href={`/${projectContext.name}/tasks/create`}
+                                        active={usePathname() === `/${projectContext.name}/tasks/create`}
                                     />
                                 </>
                             )}
@@ -105,7 +105,7 @@ const Navigation = ({user}: { user: UserType }) => {
                         <div className="hidden sm:flex sm:items-center sm:ml-6">
                             <Dropdown
                                 align="right"
-                                width={48}
+                                width={30}
                                 trigger={
                                     <button
                                         className="flex items-center text-sm bg-white h-[35px] px-1 rounded-lg text-dark_charcoal  focus:outline-none transition duration-150 ease-in-out"

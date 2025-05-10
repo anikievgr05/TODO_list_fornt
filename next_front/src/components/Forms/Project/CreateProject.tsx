@@ -69,7 +69,7 @@ const CreateProject = () => {
                 submitForm={submitForm}
                 validation={Create}
                 initialValues={{name: '', description: ''}}
-                className={isLoading ? 'animate-pulse opacity-10' : ''}
+                className={`${isLoading ? 'animate-pulse opacity-10' : ''} w-1/4`}
             >
                 <Input disabled={isLoading} name="name" label="Название"/>
                 <Textarea disabled={isLoading} name='description' label='Описание'></Textarea>

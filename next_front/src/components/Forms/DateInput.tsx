@@ -7,20 +7,20 @@ interface InputProps{
     id?: string
     disabled?: boolean
 }
-const Input = ({id, name, label, disabled = false}: InputProps) => {
+const DateInput = ({id, name, label, disabled = false}: InputProps) => {
     return (
-        <div className="pt-1 pb-1 w-full">
+        <div className="pt-1 pb-1 flex items-start justify-between flex-col">
             <Label
-                className="pt-3 text-silver_mist flex items-center "
+                className="pt-3 text-silver_mist flex items-center w-full"
                 htmlFor={name}
             >
                 <span className="w-44">{label}:</span>
                 <Field
                     id={id || name}
                     name={name}
-                    type="password"
+                    type="date"
                     disabled={disabled}
-                    className="p-0 bg-transparent border-b-2 text-silver_mist focus:ring-0 focus:border-b-silver_mist border-b-silver_mist focus:outline-none focus:border-t-transparent border-t-transparent focus:border-l-transparent border-l-transparent focus:border-r-transparent border-r-transparent"
+                    className="mb-2 pl-0 w-full max-w-[418px] pr-0 bg-transparent border-b-2 text-silver_mist focus:ring-0 focus:border-b-silver_mist border-b-silver_mist focus:outline-none focus:border-t-transparent border-t-transparent focus:border-l-transparent border-l-transparent focus:border-r-transparent border-r-transparent"
                 />
             </Label>
             <div className="flex flex-col flex-wrap">
@@ -33,4 +33,4 @@ const Input = ({id, name, label, disabled = false}: InputProps) => {
         </div>
     )
 }
-export default Input
+export default DateInput
