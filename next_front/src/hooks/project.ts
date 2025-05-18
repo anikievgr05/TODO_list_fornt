@@ -64,6 +64,16 @@ export const project = () => {
             throw error;
         }
     }
+
+    const get_projects_for_me = async () => {
+        try {
+            await csrf();
+            return await axios.get('api/user_project/get_projects_for_me');
+        } catch (error) {
+            throw error;
+        }
+    }
+
     const get_projects_with_closed = async () => {
         try {
             await csrf();
@@ -92,6 +102,7 @@ export const project = () => {
         get_projects_with_closed,
         get_project_by_name,
         get_projects,
-        close_project
+        close_project,
+        get_projects_for_me
     }
 }

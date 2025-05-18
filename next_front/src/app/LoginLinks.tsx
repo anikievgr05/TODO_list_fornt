@@ -11,7 +11,7 @@ import {useProjectContext} from "@/app/context/ProjectContext";
 
 const LoginLinks = () => {
     const { user } = useAuth({ middleware: 'guest' })
-    const {get_projects} = project()
+    const {get_projects_for_me} = project()
     const [projectUse, setProject] = useState<Project | null>(null)
     const [statusProject, serStatusProject] = useState<Status>('empty')
     const [isGetProject, setGetProject] = useState(false)
@@ -25,7 +25,7 @@ const LoginLinks = () => {
         if (isGetProject) {
             try {
                 serStatusProject('load')
-                const data = await get_projects()
+                const data = await get_projects_for_me()
                 setProjects(data.data.projects)
                 setProject(data.data.projects)
                 setProjectContext(data.data.projects);

@@ -19,7 +19,7 @@ import {useProjectContext} from "@/app/context/ProjectContext";
 import NavLink from "@/components/NavLink";
 
 const Navigation = ({user}: { user: UserType }) => {
-    const {get_projects} = project()
+    const {get_projects_for_me} = project()
     const [statusProject, serStatusProject] = useState<Status>('empty')
     const [projects, setProjects] = useState<any[]>([])
     const [projectUse, setProject] = useState<Project | null>(null)
@@ -47,7 +47,7 @@ const Navigation = ({user}: { user: UserType }) => {
         if (isGetProject) {
             try {
                 serStatusProject('load')
-                const data = await get_projects()
+                const data = await get_projects_for_me()
                 setProjects(data.data.projects)
                 serStatusProject('ok')
             } catch (error) {

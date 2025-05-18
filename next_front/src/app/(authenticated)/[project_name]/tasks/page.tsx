@@ -152,7 +152,7 @@ export default function Task() {
                                     {status_load_tasks === 'load' ? (
                                         <div>Загрузка контнента...</div>
                                     ):('')}
-                                    {status_load_tasks === 'ok' && projectContext ? (
+                                    {status_load_tasks === 'ok' && projectContext && tasks ? (
                                         <div>
                                             <table className="table-auto text-silver_mist w-full">
                                                 <thead>
