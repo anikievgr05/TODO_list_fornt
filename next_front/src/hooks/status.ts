@@ -80,6 +80,15 @@ export const status = (project: Project) => {
             throw error;
         }
     }
+
+    const get_next_status = async (id: number) => {
+        try {
+            await csrf();
+            return await axios.get(`api/${project.id}/status/${id}/next_status`);
+        } catch (error) {
+            throw error;
+        }
+    }
     return {
         get_status,
         get_status_with_closed,
@@ -88,6 +97,7 @@ export const status = (project: Project) => {
         change_order,
         create_status,
         update_status,
-        close_status
+        close_status,
+        get_next_status
     }
 }

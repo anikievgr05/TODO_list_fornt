@@ -49,7 +49,6 @@ export const user_project = () => {
     const update_role = async (data: object) => {
         try {
             await csrf();
-            console.log(data)
             return await axios.put(`api/user_project/update_role/${data.id}/?role=${data.role}&project_id=${data.project_id}`);
         } catch (error) {
             throw error;

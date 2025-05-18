@@ -18,3 +18,10 @@ export interface CloseDTO {
     id: number,
     is_closed: boolean | null
 }
+export interface StatusDTO {
+    id: number
+    project_id: number
+    name: string
+    order: number
+    is_closed: boolean
+}

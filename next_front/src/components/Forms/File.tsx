@@ -4,16 +4,13 @@ import {ErrorMessage, Field, useField} from "formik";
 interface InputProps{
     name: string;
     label: string;
-    maxFiles?: number;
 }
-const File = ({ name, label, maxFiles = 5}: InputProps) => {
+const File = ({ name, label}: InputProps) => {
     const [field, meta, helpers] = useField(name);
     const currentFiles = meta.value || [];
 
     const handleAddFile = () => {
-        if (currentFiles.length < maxFiles) {
-            helpers.setValue([...currentFiles, null]);
-        }
+        helpers.setValue([...currentFiles, null]);
     };
 
     const handleRemoveFile = (index: number) => {

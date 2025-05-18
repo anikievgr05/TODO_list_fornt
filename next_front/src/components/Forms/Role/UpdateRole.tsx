@@ -92,7 +92,6 @@ const UpdateRole: React.FC<ProjectAsProps> = ({project}) => {
         try {
             setStatusRole('load')
             const data = await get_roles()
-            console.log(data)
             setRoles(data.data.roles)
         } catch (error) {
             setStatusRole('err')

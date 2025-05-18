@@ -21,9 +21,11 @@ import DateInput from "@/components/Forms/DateInput";
 import File from "@/components/Forms/File";
 import {task} from "@/hooks/task";
 import axios, {AxiosError} from "axios";
+import {useAuth} from "@/hooks/auth";
 
 const CreatePage = () => {
     const {projectContext} = useProjectContext();
+    const {user} = useAuth({middleware: 'guest'})
 
     // запросы
     const {get_users_in_project} = user_project()

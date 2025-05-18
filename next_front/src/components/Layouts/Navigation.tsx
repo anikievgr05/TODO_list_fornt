@@ -76,8 +76,8 @@ const Navigation = ({user}: { user: UserType }) => {
                                     <MenuButton
                                         IconComponent={MainTasks}
                                         text="Мои задачи"
-                                        href="/tasks"
-                                        active={usePathname() === '/tasks'}
+                                        href={`/${projectContext.name}/tasks`}
+                                        active={usePathname() === `/${projectContext.name}/tasks`}
                                     />
                                     <MenuButton
                                         IconComponent={CreateTask}

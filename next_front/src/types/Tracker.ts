@@ -18,3 +18,9 @@ export interface CloseDTO {
     id: number,
     is_closed: boolean | null
 }
+export interface TrackerDTO {
+    id: number
+    project_id: number
+    name: string
+    is_closed: boolean
+}

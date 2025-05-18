@@ -41,7 +41,6 @@ const ChangeOrdeStatus: React.FC<ProjectAsProps> = ({project}) => {
         try {
             await change_order(id, order)
         } catch (error) {
-            console.log('# возникла ошибка')
         } finally {
             setStatusChange('ok')
         }

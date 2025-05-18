@@ -88,7 +88,6 @@ const UpdateRoleUser: React.FC<ProjectAsProps> = ({project}) => {
         }
     }
     useEffect(() => {
-        console.log(roles)
         if (roles) {
             setStatus_loadRoles('ok')
         } else {
