@@ -171,7 +171,7 @@ const UpdateUser = () => {
                                         disabled={true}
                                         hidden={true}
                                     />
-                                    <Input name="name" label="Название" disabled={statusUpdate === 'load'}/>
+                                    <Input name="name" label="Имя" disabled={statusUpdate === 'load'}/>
                                     <Input name="email" label="Почта"/>
                                     <InputPassword name="password" label="Парль"/>
                                     <InputPassword name="password_confirmation" label="Повторите пароль"/>

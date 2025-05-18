@@ -31,3 +31,18 @@ export interface FireDTO {
     id: number,
     is_fire: boolean | false
 }
+
+export interface UpdateUser {
+    id: number
+    name: string
+    email: string
+    password?: string
+    password_confirmation?: boolean
+}
+export interface UpdateUserInit {
+    id: null
+    name: ''
+    email: ''
+    password: null
+    password_confirmation: null
+}
